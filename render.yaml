@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: whiteboard-reel-generator
+    runtime: node
+    plan: starter          # upgrade to Standard for longer renders
+    buildCommand: |
+      apt-get update -y && \
+      apt-get install -y \
+        build-essential \
+        libcairo2-dev \
+        libpango1.0-dev \
+        libjpeg-dev \
+        libgif-dev \
+        librsvg2-dev && \
+      npm install
+    startCommand: node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: GEMINI_API_KEY
+        sync: false          # set in Render dashboard
+      - key: ELEVENLABS_API_KEY
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+      - key: ELEVENLABS_VOICE_ID
+        sync: false
+    autoDeploy: true
+    healthCheckPath: /
