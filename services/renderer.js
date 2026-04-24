@@ -161,14 +161,23 @@ function drawProgressBar(ctx, fraction, theme) {
 }
 
 // ── Main render entry ─────────────────────────────────────────────────────────
-async function renderFrames(scenes, framesDir, topic = "Finance") {
-  const audioDuration   = getAudioDurationSeconds(AUDIO_PATH);
+// audioPath  – path to the generated mp3; defaults to legacy global path
+// onProgress – optional (pct: number) => void  called every ~30 frames
+async function renderFrames(
+  scenes,
+  framesDir,
+  topic      = "Finance",
+  onProgress = null,
+  audioPath  = AUDIO_PATH
+) {
+  const audioDuration   = getAudioDurationSeconds(audioPath);
   const fallback        = INTRO_SECONDS + scenes.reduce((s, sc) => s + (Number(sc.duration) || 4), 0);
   const totalAudioSecs  = Math.max(20, audioDuration || fallback);
   const scenePlans      = buildSceneTimeline(scenes, totalAudioSecs);
   const totalFrames     = Math.max(1, Math.ceil(totalAudioSecs * FPS));
   const canvas          = createCanvas(W, H);
   const ctx             = canvas.getContext("2d");
+  const REPORT_EVERY    = 30; // report progress every N frames
 
   for (let frame = 0; frame < totalFrames; frame++) {
     const currentTime = frame / FPS;
@@ -183,7 +192,6 @@ async function renderFrames(scenes, framesDir, topic = "Finance") {
     } else {
       const active = findActiveScene(scenePlans, currentTime);
       if (active) {
-        // renderScene draws its own background + text + emoji
         renderScene(ctx, active, currentTime, frame);
         const theme = SCENE_THEMES[active.timings.sceneIndex % SCENE_THEMES.length];
         drawProgressBar(ctx, overall, theme);
@@ -196,6 +204,11 @@ async function renderFrames(scenes, framesDir, topic = "Finance") {
 
     const name = `frame_${String(frame).padStart(4, "0")}.png`;
     fs.writeFileSync(path.join(framesDir, name), canvas.toBuffer("image/png"));
+
+    // Report render progress periodically (0–100 %)
+    if (onProgress && (frame % REPORT_EVERY === 0 || frame === totalFrames - 1)) {
+      onProgress(Math.round((frame / totalFrames) * 100));
+    }
   }
 
   return totalFrames;

@@ -191,15 +191,16 @@
     /* ── Status bar ── */
     .status-bar {
       display: none;
-      align-items: center;
-      gap: 14px;
+      gap: 16px;
       background: var(--primary-light);
       border: 1px solid #c7d2fe;
       border-radius: var(--radius);
-      padding: 14px 20px;
+      padding: 16px 20px;
       margin-top: 16px;
+      align-items: center;
     }
     .status-bar.visible { display: flex; }
+
     .spinner {
       width: 22px; height: 22px;
       border: 3px solid #c7d2fe;
@@ -209,8 +210,70 @@
       flex-shrink: 0;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
+
+    .status-body { flex: 1; min-width: 0; }
     .status-text { font-size: 14px; font-weight: 600; color: var(--primary-dark); }
-    .status-step { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+    /* real-time progress bar */
+    .progress-track {
+      height: 6px;
+      background: #c7d2fe;
+      border-radius: 99px;
+      margin: 7px 0 5px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), #818cf8);
+      border-radius: 99px;
+      width: 0%;
+      transition: width 0.6s ease;
+    }
+
+    .status-step { font-size: 12px; color: var(--muted); }
+
+    /* pipeline indicator */
+    .pipeline {
+      display: flex;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .pipe-step {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+    .pipe-step .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #cbd5e1;
+      flex-shrink: 0;
+    }
+    .pipe-step.done   .dot { background: var(--success); }
+    .pipe-step.active .dot { background: var(--primary); box-shadow: 0 0 0 3px rgba(99,102,241,0.25); animation: pulse 1.2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+    .pipe-step.done   { color: var(--success); }
+    .pipe-step.active { color: var(--primary-dark); }
+
+    .pipe-arrow {
+      font-size: 10px;
+      color: #cbd5e1;
+      align-self: center;
+      margin-top: -1px;
+    }
+
+    /* progress pct badge */
+    .progress-pct {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--primary-dark);
+      min-width: 46px;
+      text-align: right;
+      flex-shrink: 0;
+    }
 
     /* ── Error banner ── */
     .error-bar {
@@ -228,7 +291,7 @@
     }
     .error-bar.visible { display: flex; }
 
-    /* ── Result section (hidden until generated) ── */
+    /* ── Result section ── */
     #result-section { display: none; }
     #result-section.visible { display: block; }
 
@@ -404,15 +467,6 @@
     }
     .history-time { font-size: 11px; color: var(--muted); }
 
-    /* ── Empty state ── */
-    .empty-history {
-      text-align: center;
-      padding: 40px 20px;
-      color: var(--muted);
-    }
-    .empty-history .emoji { font-size: 40px; display: block; margin-bottom: 10px; }
-    .empty-history p { font-size: 14px; font-weight: 500; }
-
     /* ── Footer ── */
     .footer {
       text-align: center;
@@ -429,6 +483,7 @@
       .input-row { flex-direction: column; }
       .btn-primary { width: 100%; justify-content: center; }
       .history-grid { grid-template-columns: repeat(2, 1fr); }
+      .pipeline { flex-wrap: wrap; }
     }
   </style>
 </head>
@@ -474,16 +529,30 @@
       <button class="example-chip" onclick="setTopic(this)">Stock Market Basics</button>
     </div>
 
-    <!-- Status -->
+    <!-- Status bar (shown while job runs) -->
     <div class="status-bar" id="statusBar">
       <div class="spinner"></div>
-      <div>
-        <div class="status-text" id="statusText">Generating script…</div>
-        <div class="status-step" id="statusStep">This usually takes 40–90 seconds</div>
+      <div class="status-body">
+        <div class="status-text" id="statusText">Starting…</div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="status-step" id="statusStep">Connecting to server…</div>
+        <!-- Step pipeline -->
+        <div class="pipeline" id="pipeline">
+          <div class="pipe-step" id="pipe-script"><span class="dot"></span>Script</div>
+          <span class="pipe-arrow">›</span>
+          <div class="pipe-step" id="pipe-audio"><span class="dot"></span>Audio</div>
+          <span class="pipe-arrow">›</span>
+          <div class="pipe-step" id="pipe-frames"><span class="dot"></span>Frames</div>
+          <span class="pipe-arrow">›</span>
+          <div class="pipe-step" id="pipe-encode"><span class="dot"></span>Encode</div>
+        </div>
       </div>
+      <div class="progress-pct" id="progressPct">0%</div>
     </div>
 
-    <!-- Error -->
+    <!-- Error banner -->
     <div class="error-bar" id="errorBar">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
       <span id="errorText">Something went wrong. Please try again.</span>
@@ -544,88 +613,112 @@
 
 <!-- ════════════════ SCRIPT ════════════════ -->
 <script>
-  // ── State ────────────────────────────────────────────────────────────────────
+  // ─── Constants ────────────────────────────────────────────────────────────────
+  const LS_JOB   = "frg_job";    // { jobId, topic }
+  const LS_TOPIC = "frg_topic";  // last used topic
+  const POLL_MS  = 3000;
+
+  // ─── State ───────────────────────────────────────────────────────────────────
+  let pollTimer      = null;
+  let currentJobId   = null;
   let currentHashtags = [];
-  let statusTimer     = null;
+  let historyItems   = [];
 
-  const STATUS_STEPS = [
-    { text: "Generating script…",    step: "Writing Hinglish scenes with Gemini AI" },
-    { text: "Creating voiceover…",   step: "Synthesising Hindi audio with ElevenLabs" },
-    { text: "Rendering frames…",     step: "Painting emoji animations (1080 × 1920)" },
-    { text: "Encoding video…",       step: "Stitching frames + audio with FFmpeg" },
-    { text: "Almost done…",          step: "Final touches on your reel" },
-  ];
-  let stepIndex = 0;
+  // ─── Pipeline step boundaries (by progress %) ────────────────────────────────
+  // script: 5–20 | audio: 20–42 | frames: 42–82 | encode: 82–100
+  function pipelineState(pct) {
+    return {
+      script: pct >= 5  ? (pct >= 20 ? "done" : "active") : "",
+      audio:  pct >= 20 ? (pct >= 42 ? "done" : "active") : "",
+      frames: pct >= 42 ? (pct >= 82 ? "done" : "active") : "",
+      encode: pct >= 82 ? (pct >= 100 ? "done" : "active") : "",
+    };
+  }
 
-  // ── Helpers ──────────────────────────────────────────────────────────────────
+  function updatePipeline(pct) {
+    const s = pipelineState(pct);
+    ["script","audio","frames","encode"].forEach(key => {
+      const el = document.getElementById("pipe-" + key);
+      el.className = "pipe-step" + (s[key] ? " " + s[key] : "");
+    });
+  }
+
+  // ─── UI helpers ──────────────────────────────────────────────────────────────
   function setTopic(chip) {
     document.getElementById("topic").value = chip.textContent;
     document.getElementById("topic").focus();
-  }
-
-  function showStatus(visible) {
-    document.getElementById("statusBar").classList.toggle("visible", visible);
-    document.getElementById("errorBar").classList.remove("visible");
-    if (visible) {
-      stepIndex = 0;
-      updateStep();
-      statusTimer = setInterval(() => {
-        stepIndex = Math.min(stepIndex + 1, STATUS_STEPS.length - 1);
-        updateStep();
-      }, 15000);
-    } else {
-      clearInterval(statusTimer);
-    }
-  }
-
-  function updateStep() {
-    const s = STATUS_STEPS[stepIndex];
-    document.getElementById("statusText").textContent = s.text;
-    document.getElementById("statusStep").textContent = s.step;
-  }
-
-  function showError(msg) {
-    document.getElementById("errorText").textContent = msg;
-    document.getElementById("errorBar").classList.add("visible");
   }
 
   function setDisabled(disabled) {
     const btn = document.getElementById("generateBtn");
     btn.disabled = disabled;
     btn.innerHTML = disabled
-      ? `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="animation:spin 0.8s linear infinite"><path d="M21 12a9 9 0 1 1-6.22-8.56"/></svg> Generating…`
+      ? `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="animation:spin 0.8s linear infinite"><path d="M21 12a9 9 0 1 1-6.22-8.56"/></svg> Generating…`
       : `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg> Generate`;
+  }
+
+  function showStatusBar(visible) {
+    document.getElementById("statusBar").classList.toggle("visible", visible);
+    if (!visible) {
+      // reset pipeline dots
+      ["script","audio","frames","encode"].forEach(key => {
+        document.getElementById("pipe-" + key).className = "pipe-step";
+      });
+    }
+  }
+
+  function updateStatusUI(job) {
+    const pct = job.progress || 0;
+    document.getElementById("statusText").textContent = job.step || "Working…";
+    document.getElementById("progressFill").style.width = pct + "%";
+    document.getElementById("progressPct").textContent  = pct + "%";
+    document.getElementById("statusStep").textContent   = stepSubtitle(job.step, pct);
+    updatePipeline(pct);
+  }
+
+  function stepSubtitle(step, pct) {
+    if (!step || step === "Queued…")          return "Job is queued — starting soon";
+    if (/script/i.test(step))                 return "Writing Hinglish scenes with Gemini AI";
+    if (/voiceover|audio/i.test(step))        return "Synthesising Hindi audio with ElevenLabs";
+    if (/frame/i.test(step))                  return `Painting emoji animations (1080 × 1920) — ${pct}% done`;
+    if (/encod/i.test(step))                  return "Stitching frames + audio with FFmpeg";
+    if (/done/i.test(step))                   return "Wrapping up…";
+    return "This usually takes 40–90 seconds";
+  }
+
+  function showError(msg) {
+    document.getElementById("errorText").textContent = msg || "Something went wrong. Please try again.";
+    document.getElementById("errorBar").classList.add("visible");
+  }
+
+  function hideError() {
+    document.getElementById("errorBar").classList.remove("visible");
   }
 
   function timeAgo(iso) {
     const diff = Math.floor((Date.now() - new Date(iso)) / 1000);
-    if (diff < 60)   return `${diff}s ago`;
-    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+    if (diff < 60)    return `${diff}s ago`;
+    if (diff < 3600)  return `${Math.floor(diff / 60)}m ago`;
     if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
     return `${Math.floor(diff / 86400)}d ago`;
   }
 
-  // ── Load result into player ───────────────────────────────────────────────────
+  // ─── Load result into player ──────────────────────────────────────────────────
   function loadResult(videoUrl, caption, hashtags) {
-    // Video
     const player = document.getElementById("videoPlayer");
     player.src   = videoUrl + "?t=" + Date.now();
     player.load();
     player.play().catch(() => {});
 
-    // Download link
     const dl = document.getElementById("downloadBtn");
     dl.href     = videoUrl;
     dl.download = "reel.mp4";
 
-    // Caption
     document.getElementById("captionBox").value = caption || "";
 
-    // Hashtags
     currentHashtags = Array.isArray(hashtags) ? hashtags : [];
     renderHashtags(currentHashtags);
 
-    // Show sections
     document.getElementById("result-section").classList.add("visible");
     document.getElementById("result-section").scrollIntoView({ behavior: "smooth", block: "start" });
   }
@@ -637,7 +730,7 @@
       : "<span style='color:var(--muted);font-size:13px;'>No hashtags</span>";
   }
 
-  // ── Copy hashtags ─────────────────────────────────────────────────────────────
+  // ─── Copy hashtags ────────────────────────────────────────────────────────────
   function copyHashtags() {
     const text = currentHashtags.join(" ");
     if (!text) return;
@@ -646,7 +739,6 @@
       fb.classList.add("show");
       setTimeout(() => fb.classList.remove("show"), 2000);
     }).catch(() => {
-      // Fallback for non-https
       const ta = document.createElement("textarea");
       ta.value = text;
       document.body.appendChild(ta);
@@ -656,7 +748,142 @@
     });
   }
 
-  // ── History rendering ─────────────────────────────────────────────────────────
+  // ─── Polling engine ───────────────────────────────────────────────────────────
+  function startPolling(jobId) {
+    stopPolling();
+    pollStatus(jobId);                           // immediate first check
+    pollTimer = setInterval(() => pollStatus(jobId), POLL_MS);
+  }
+
+  function stopPolling() {
+    if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+  }
+
+  async function pollStatus(jobId) {
+    try {
+      const res = await fetch(`/generate/status/${jobId}`);
+
+      // 404 → server restarted and lost in-memory state
+      if (res.status === 404) {
+        stopPolling();
+        localStorage.removeItem(LS_JOB);
+        currentJobId = null;
+        setDisabled(false);
+        showStatusBar(false);
+        showError("Server was restarted and lost your job. Please generate again.");
+        return;
+      }
+
+      if (!res.ok) return; // transient network hiccup — retry next tick
+
+      const job = await res.json();
+      handleJobUpdate(job);
+
+    } catch (_) {
+      // network error — silently retry next tick
+    }
+  }
+
+  function handleJobUpdate(job) {
+    // Show live progress on every tick
+    showStatusBar(true);
+    updateStatusUI(job);
+
+    if (job.status === "completed") {
+      stopPolling();
+      localStorage.removeItem(LS_JOB);
+      currentJobId = null;
+      setDisabled(false);
+      showStatusBar(false);
+      hideError();
+      loadResult(job.videoUrl, job.caption, job.hashtags);
+      fetchHistory();
+    }
+
+    if (job.status === "failed") {
+      stopPolling();
+      localStorage.removeItem(LS_JOB);
+      currentJobId = null;
+      setDisabled(false);
+      showStatusBar(false);
+      showError(job.error || "Generation failed. Please try again.");
+    }
+  }
+
+  // ─── Main generate ────────────────────────────────────────────────────────────
+  async function generate() {
+    const topic = document.getElementById("topic").value.trim();
+    if (!topic) {
+      document.getElementById("topic").focus();
+      return;
+    }
+
+    // Save topic for session restore
+    localStorage.setItem(LS_TOPIC, topic);
+    hideError();
+    setDisabled(true);
+    showStatusBar(true);
+    updateStatusUI({ progress: 0, step: "Queued…" });
+
+    try {
+      const res = await fetch("/generate", {
+        method:  "POST",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify({ topic }),
+      });
+
+      const data = await res.json();
+      if (!res.ok || data.error) throw new Error(data.error || `Server error ${res.status}`);
+
+      // Persist job so a tab refresh / mobile switch can resume
+      localStorage.setItem(LS_JOB, JSON.stringify({ jobId: data.jobId, topic }));
+      currentJobId = data.jobId;
+
+      startPolling(data.jobId);
+
+    } catch (err) {
+      stopPolling();
+      setDisabled(false);
+      showStatusBar(false);
+      showError(err.message || "Could not start generation. Please try again.");
+    }
+  }
+
+  // ─── Restore in-progress job on page load ────────────────────────────────────
+  function restoreJob() {
+    // Restore topic field
+    const savedTopic = localStorage.getItem(LS_TOPIC);
+    if (savedTopic) document.getElementById("topic").value = savedTopic;
+
+    // Resume polling if there is an active job
+    const raw = localStorage.getItem(LS_JOB);
+    if (!raw) return;
+    try {
+      const { jobId } = JSON.parse(raw);
+      if (!jobId) return;
+      currentJobId = jobId;
+      setDisabled(true);
+      showStatusBar(true);
+      updateStatusUI({ progress: 0, step: "Reconnecting…" });
+      startPolling(jobId);
+    } catch (_) {
+      localStorage.removeItem(LS_JOB);
+    }
+  }
+
+  // ─── History ──────────────────────────────────────────────────────────────────
+  function pickEmoji(topic) {
+    if (/sip|mutual|fund|invest/i.test(topic))  return "📈";
+    if (/fd|fixed|deposit/i.test(topic))         return "🏦";
+    if (/rich|poor|wealthy/i.test(topic))        return "💰";
+    if (/save|saving|budget/i.test(topic))       return "🪙";
+    if (/stock|market|share/i.test(topic))       return "📊";
+    if (/tax|gst|itr/i.test(topic))              return "🧾";
+    if (/insurance|term/i.test(topic))           return "🛡️";
+    if (/home|house|loan/i.test(topic))          return "🏠";
+    return "💡";
+  }
+
   function renderHistory(items, activeId) {
     const section = document.getElementById("history-section");
     const grid    = document.getElementById("historyGrid");
@@ -667,12 +894,11 @@
     }
 
     section.classList.add("visible");
-
     grid.innerHTML = items.map(item => {
-      const emoji = pickEmoji(item.topic);
+      const emoji    = pickEmoji(item.topic);
       const isActive = activeId && item.id === activeId;
       return `
-        <div class="history-card${isActive ? " active" : ""}" onclick="loadHistory(${item.id})">
+        <div class="history-card${isActive ? " active" : ""}" onclick="loadFromHistory('${item.id}')">
           <div class="history-thumb">
             <span>${emoji}</span>
             <div class="play-icon">
@@ -687,22 +913,7 @@
     }).join("");
   }
 
-  function pickEmoji(topic) {
-    const t = (topic || "").toLowerCase();
-    if (/sip|mutual|fund|invest/i.test(t))   return "📈";
-    if (/fd|fixed|deposit/i.test(t))          return "🏦";
-    if (/rich|poor|wealthy/i.test(t))         return "💰";
-    if (/save|saving|budget/i.test(t))        return "🪙";
-    if (/stock|market|share/i.test(t))        return "📊";
-    if (/tax|gst|itr/i.test(t))               return "🧾";
-    if (/insurance|term/i.test(t))            return "🛡️";
-    if (/home|house|loan/i.test(t))           return "🏠";
-    return "💡";
-  }
-
-  let historyItems = [];
-
-  async function loadHistory(id) {
+  function loadFromHistory(id) {
     const item = historyItems.find(h => h.id === id);
     if (!item) return;
     loadResult(item.video_url, item.caption, item.hashtags);
@@ -719,53 +930,18 @@
     } catch (_) {}
   }
 
-  // ── Main generate ─────────────────────────────────────────────────────────────
-  async function generate() {
-    const topic = document.getElementById("topic").value.trim();
-    if (!topic) {
-      document.getElementById("topic").focus();
-      return;
-    }
+  // ─── Topic persistence on every keystroke ────────────────────────────────────
+  document.getElementById("topic").addEventListener("input", (e) => {
+    if (e.target.value.trim()) localStorage.setItem(LS_TOPIC, e.target.value.trim());
+  });
 
-    setDisabled(true);
-    showStatus(true);
-    document.getElementById("errorBar").classList.remove("visible");
-
-    try {
-      const res = await fetch("/generate", {
-        method:  "POST",
-        headers: { "Content-Type": "application/json" },
-        body:    JSON.stringify({ topic }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok || data.error) {
-        throw new Error(data.error || `Server error ${res.status}`);
-      }
-
-      loadResult(data.video, data.caption, data.hashtags);
-
-      // Refresh history
-      await fetchHistory();
-      // Mark this reel as active
-      const latest = historyItems[0];
-      if (latest) renderHistory(historyItems, latest.id);
-
-    } catch (err) {
-      showError(err.message || "Generation failed. Please try again.");
-    } finally {
-      setDisabled(false);
-      showStatus(false);
-    }
-  }
-
-  // ── Enter key shortcut ────────────────────────────────────────────────────────
+  // ─── Enter key shortcut ───────────────────────────────────────────────────────
   document.getElementById("topic").addEventListener("keydown", (e) => {
     if (e.key === "Enter" && !document.getElementById("generateBtn").disabled) generate();
   });
 
-  // ── Init ──────────────────────────────────────────────────────────────────────
+  // ─── Init ─────────────────────────────────────────────────────────────────────
+  restoreJob();
   fetchHistory();
 </script>
 
