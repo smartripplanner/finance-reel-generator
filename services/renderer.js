@@ -177,7 +177,8 @@ async function renderFrames(
   const totalFrames     = Math.max(1, Math.ceil(totalAudioSecs * FPS));
   const canvas          = createCanvas(W, H);
   const ctx             = canvas.getContext("2d");
-  const REPORT_EVERY    = 30; // report progress every N frames
+  const REPORT_EVERY    = 30; // report progress + yield every N frames
+  const YIELD_EVERY     = 30; // yield to event loop every N frames (keeps Express responsive)
 
   for (let frame = 0; frame < totalFrames; frame++) {
     const currentTime = frame / FPS;
@@ -205,9 +206,15 @@ async function renderFrames(
     const name = `frame_${String(frame).padStart(4, "0")}.png`;
     fs.writeFileSync(path.join(framesDir, name), canvas.toBuffer("image/png"));
 
-    // Report render progress periodically (0–100 %)
+    // Yield to the event loop periodically so Express can serve status polls
+    // while the CPU-heavy canvas loop is running.
+    if (frame % YIELD_EVERY === 0) {
+      await new Promise(resolve => setImmediate(resolve));
+    }
+
+    // Report render progress (pct, frame, total) — caller uses frame+total for logging
     if (onProgress && (frame % REPORT_EVERY === 0 || frame === totalFrames - 1)) {
-      onProgress(Math.round((frame / totalFrames) * 100));
+      onProgress(Math.round((frame / totalFrames) * 100), frame, totalFrames);
     }
   }
 
