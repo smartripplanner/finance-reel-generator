@@ -8,12 +8,12 @@ const ffmpegBin = require("ffmpeg-static");
 
 const BASE_URL      = "https://api.elevenlabs.io/v1";
 const FALLBACK_VOICE = "21m00Tcm4TlvDq8ikWAM";  // Rachel (clear, warm, works well for Hindi)
-const DEFAULT_SPEED  = 1.15;   // slightly brisker pace — sync still intact via word-count proportional timing
-const MIN_TARGET_SECS = 35;
-const MAX_TARGET_SECS = 48;
-const CTA_LINE = "Aise aur smart money reels chahiye? Follow kar lo.";
-const INTRO_SILENCE_MS = 600;  // ↓ shorter intro silence (was 1000)
-const OUTRO_SILENCE_S  = 3;
+const DEFAULT_SPEED  = 1.20;   // brisker pace — matches 20-25 s audio window
+const MIN_TARGET_SECS = 20;    // aligned with renderer MIN_DURATION (20 s)
+const MAX_TARGET_SECS = 25;    // leaves 5 s headroom under the 30 s video cap
+const CTA_LINE = "Aise aur tips chahiye? Toh abhi follow karo.";
+const INTRO_SILENCE_MS = 600;  // matches INTRO_SECONDS in renderer.js
+const OUTRO_SILENCE_S  = 1;    // short tail — video cap is 30 s, don't waste it
 
 ffmpeg.setFfmpegPath(ffmpegBin);
 
@@ -91,6 +91,15 @@ function preprocessText(text) {
     .replace(/\bkharcha\b/gi, "kharcha")
     .replace(/\bkharche\b/gi, "kharche")
 
+    // ─── CTA / call-to-action corrections — MUST come before generic verb fixes ───
+    // "follow karlungi / kar lungi / kar lunga / kar lo" → imperative "follow karo"
+    .replace(/\bfollow\s+karlungi\b/gi,     "follow karo")
+    .replace(/\bfollow\s+kar\s+lungi\b/gi,  "follow karo")
+    .replace(/\bfollow\s+kar\s+lunga\b/gi,  "follow karo")
+    .replace(/\bfollow\s+kar\s+lo\b/gi,     "follow karo")
+    .replace(/\bfollow\s+karna\b/gi,        "follow karo")
+    .replace(/\bfollow\s+kar\s+lena\b/gi,   "follow karo")
+
     // ─── Feminine voice corrections (safety net — prompt already asks for feminine) ───
     // Masculine future-tense (unga/unga endings) → feminine (ungi)
     .replace(/\bkarunga\b/gi,    "karungi")
@@ -138,10 +147,12 @@ function humanizeNarration(text) {
     .replace(/\bkyun\b/gi,          "kyoon")
     .replace(/\bkyu\b/gi,           "kyoon")
     .replace(/\bkarna chahiye\b/gi, "karna chahiye")
-    .replace(/\bfollow kar lo\b/gi, "follow kar lo");
+    // Ensure any surviving CTA variants are normalised to the imperative form
+    .replace(/\bfollow\s+kar\s+l[oa]\b/gi,  "follow karo")
+    .replace(/\bfollow\s+kar\s+l[uo]ngi?\b/gi, "follow karo");
 
-  // Append CTA if not already present
-  return softened.toLowerCase().includes("follow kar lo")
+  // Append CTA only if none of the known "follow" variants already appear
+  return /follow\s+kar/i.test(softened)
     ? softened
     : `${softened}. ${CTA_LINE}`;
 }
@@ -155,11 +166,11 @@ function estimateSpeechSeconds(text, speed) {
 
 function tuneSpeed(text) {
   const envSpeed = Number(process.env.ELEVENLABS_SPEED || DEFAULT_SPEED);
-  let speed = Number.isFinite(envSpeed) ? clamp(envSpeed, 1.0, 1.25) : DEFAULT_SPEED;
+  let speed = Number.isFinite(envSpeed) ? clamp(envSpeed, 1.0, 1.30) : DEFAULT_SPEED;
 
   const est = estimateSpeechSeconds(text, speed);
-  if (est > MAX_TARGET_SECS) speed = Math.min(1.25, speed * (est / MAX_TARGET_SECS));
-  else if (est < MIN_TARGET_SECS) speed = Math.max(1.0,  speed * Math.max(0.92, est / MIN_TARGET_SECS));
+  if      (est > MAX_TARGET_SECS) speed = Math.min(1.30, speed * (est / MAX_TARGET_SECS));
+  else if (est < MIN_TARGET_SECS) speed = Math.max(1.0,  speed * Math.max(0.95, est / MIN_TARGET_SECS));
 
   return Number(speed.toFixed(2));
 }
