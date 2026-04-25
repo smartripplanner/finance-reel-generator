@@ -5,14 +5,11 @@ const router     = express.Router();
 const path       = require("path");
 const fs         = require("fs");
 const { v4: uuidv4 } = require("uuid");
-const ffmpeg     = require("fluent-ffmpeg");
-const ffmpegBin  = require("ffmpeg-static");
 
 const { generateScript, generateCaption } = require("../services/gemini");
 const { generateAudio  } = require("../services/elevenlabs");
+// renderFrames now handles both rendering AND encoding via JPEG→stdin pipe
 const { renderFrames   } = require("../services/renderer");
-
-ffmpeg.setFfmpegPath(ffmpegBin);
 
 const ROOT       = path.join(__dirname, "..");
 const TEMP_BASE  = path.join(ROOT, "temp");
@@ -156,55 +153,37 @@ function getHistory() {
     }));
 }
 
-// ─── Video encoder ────────────────────────────────────────────────────────────
-function encodeVideo(framesDir, audioPath, outputPath) {
-  return new Promise((resolve, reject) => {
-    ffmpeg()
-      .input(path.join(framesDir, "frame_%04d.png")).inputOptions(["-framerate 30"])
-      .input(audioPath)
-      .videoCodec("libx264")
-      .outputOptions(["-preset fast", "-crf 22", "-pix_fmt yuv420p", "-movflags +faststart", "-shortest"])
-      .audioCodec("aac").audioBitrate("128k")
-      .output(outputPath)
-      .on("start", cmd => log(null, `ffmpeg: ${cmd.slice(0, 120)}`))
-      .on("end",   resolve)
-      .on("error", (err, _o, stderr) =>
-        reject(new Error(`FFmpeg: ${err.message}\n${(stderr || "").slice(-400)}`))
-      )
-      .run();
-  });
-}
-
 // ─── Background job runner ────────────────────────────────────────────────────
 //
-// Progress milestones:
-//   0        queued
-//   2        processing start
-//   10       script complete
-//   12       audio/caption started
-//   25       audio complete
-//   60       frame rendering started
-//   60 → 80  frame rendering progress (proportional)
-//   80       frame rendering complete
-//   95       ffmpeg encoding started
-//   100      done
+// Progress milestones (render + encode are now a single streaming step):
+//   0          queued
+//   2          processing start
+//   10         script complete
+//   12         audio/caption started
+//   25         audio complete
+//   30         render+encode stream start
+//   30 → 95    render+encode (frame-driven; map 0→100 % render to 30→95 %)
+//   100        done (FFmpeg finalised MP4)
+//
+// There is NO separate frames directory.  Frames are JPEG-encoded and piped
+// directly to FFmpeg stdin — no intermediate files touch the disk.
 //
 async function runJob(jobId) {
+  // Only a jobTemp dir is needed — audio goes here; no frames dir required
   const jobTemp   = path.join(TEMP_BASE, jobId);
-  const framesDir = path.join(jobTemp, "frames");
   const audioPath = path.join(jobTemp, "audio.mp3");
   const videoFile = `reel_${Date.now()}.mp4`;
   const videoPath = path.join(OUTPUT_DIR, videoFile);
   const videoUrl  = `/output/${videoFile}`;
 
   try {
-    fs.mkdirSync(framesDir, { recursive: true });
+    fs.mkdirSync(jobTemp,    { recursive: true });
     fs.mkdirSync(OUTPUT_DIR, { recursive: true });
 
     const job = jobs.get(jobId);
     if (!job) return;
 
-    // ── 1 / 4  Script ─────────────────────────────────────────────────────────
+    // ── 1 / 3  Script ─────────────────────────────────────────────────────────
     patch(jobId, { status: "processing", progress: 2, step: "Generating script…" });
     log(jobId, `script start — "${job.topic}"`);
 
@@ -213,7 +192,7 @@ async function runJob(jobId) {
     log(jobId, `script done — ${scenes.length} scenes`);
     patch(jobId, { progress: 10, step: "Script ready…" });
 
-    // ── 2 / 4  Audio + Caption (parallel) ────────────────────────────────────
+    // ── 2 / 3  Audio + Caption (parallel) ────────────────────────────────────
     patch(jobId, { progress: 12, step: "Creating voiceover…" });
     log(jobId, "audio + caption start");
 
@@ -230,38 +209,31 @@ async function runJob(jobId) {
     log(jobId, "audio + caption done");
     patch(jobId, { progress: 25, step: "Audio ready…" });
 
-    // ── 3 / 4  Render frames ──────────────────────────────────────────────────
-    patch(jobId, { progress: 60, step: "Rendering frames…" });
-    log(jobId, "frame render start");
+    // ── 3 / 3  Render + encode (streaming — no frames on disk) ───────────────
+    patch(jobId, { progress: 30, step: "Rendering & encoding…" });
+    log(jobId, "render+encode start (streaming JPEG→ffmpeg pipe)");
 
     let lastLoggedFrame = -1;
     await renderFrames(
-      scenes, framesDir, job.topic,
+      scenes,
+      videoPath,
+      job.topic,
+      audioPath,
       (pct, frame, total) => {
-        // Map render 0–100 % → overall progress 60–80 %
-        const overall = 60 + Math.round(pct * 0.20);
-        // skip disk write for every frame tick — just update memory
-        patch(jobId, { progress: overall, step: "Rendering frames…" }, false);
+        // Map render 0–100 % → job progress 30–95 %
+        const overall = 30 + Math.round(pct * 0.65);
+        patch(jobId, { progress: overall, step: "Rendering & encoding…" }, false);
 
-        // Log every ~10 % of total frames (avoids flooding console)
+        // Log every ~10 % of total frames
         const threshold = Math.max(1, Math.round(total * 0.10));
         if (frame - lastLoggedFrame >= threshold) {
-          log(jobId, `frame ${frame}/${total} (${pct}%)`);
+          log(jobId, `frame ${frame}/${total} (${pct}%) → job ${overall}%`);
           lastLoggedFrame = frame;
         }
-      },
-      audioPath
+      }
     );
 
-    log(jobId, "frame render complete");
-    patch(jobId, { progress: 80, step: "Frames done…" });   // persist here
-
-    // ── 4 / 4  Encode ─────────────────────────────────────────────────────────
-    patch(jobId, { progress: 95, step: "Encoding video…" });
-    log(jobId, "encode start");
-
-    await encodeVideo(framesDir, audioPath, videoPath);
-    log(jobId, `encode complete → ${videoFile}`);
+    log(jobId, `render+encode complete → ${videoFile}`);
 
     // ── Done ──────────────────────────────────────────────────────────────────
     patch(jobId, {
@@ -279,7 +251,7 @@ async function runJob(jobId) {
     patch(jobId, { status: "failed", step: "Failed.", error: err.message });
 
   } finally {
-    // Always clean up the per-job temp dir (frames + audio)
+    // Remove per-job temp dir (audio only — no frames were written)
     try { fs.rmSync(jobTemp, { recursive: true, force: true }); } catch (_) {}
   }
 }

@@ -2,12 +2,15 @@
 
 const { createCanvas } = require("canvas");
 
-const W = 1080;
-const H = 1920;
+// ── Canvas dimensions (720×1280 for 512 MB Render instances) ─────────────────
+// Scale factor vs. original 1080×1920 = 2/3.  All absolute pixel literals
+// below have been multiplied by 2/3 and rounded so proportions are identical.
+const W = 720;
+const H = 1280;
 
-// Fixed layout zones
-const TEXT_AREA  = { x: 60, y: 130, width: 960, height: 480 };
-const VISUAL_AREA = { x: 60, y: 680, width: 960, height: 1100 };
+// Fixed layout zones (scaled from 1080p originals)
+const TEXT_AREA   = { x: 40, y: 87,  width: 640, height: 320 };
+const VISUAL_AREA = { x: 40, y: 453, width: 640, height: 733 };
 
 // Legacy colours (kept for compat)
 const COLORS = {
@@ -101,7 +104,7 @@ function springBounce(t) {
 }
 
 // ── Text measurement ──────────────────────────────────────────────────────────
-const BOLD_FONT = '"Arial Black", "Impact", "Segoe UI Black", sans-serif';
+const BOLD_FONT  = '"Arial Black", "Impact", "Segoe UI Black", sans-serif';
 const EMOJI_FONT = '"Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif';
 
 const _measureCanvas = createCanvas(10, 10);
@@ -125,18 +128,19 @@ function getKeywordColor(word, theme) {
 // ── Text layout → array of positioned runs ───────────────────────────────────
 function layoutTextRuns(text, box, theme) {
   const words = String(text || "").split(/\s+/).filter(Boolean);
-  let fontSize = box.width >= 900 ? 92 : 80;
+  // Scaled font sizes: 92→61, 80→53 at 720p
+  let fontSize = box.width >= 600 ? 61 : 53;
   let lines = [];
 
-  while (fontSize >= 46) {
+  while (fontSize >= 31) {
     lines = [];
-    let line = [];
+    let line  = [];
     let lineW = 0;
 
     for (const word of words) {
       const token = word + " ";
       const tw    = measureTextWidth(token, fontSize);
-      if (line.length && lineW + tw > box.width - 30) {
+      if (line.length && lineW + tw > box.width - 20) {
         lines.push(line);
         line  = [];
         lineW = 0;
@@ -146,12 +150,12 @@ function layoutTextRuns(text, box, theme) {
     }
     if (line.length) lines.push(line);
     if (lines.length <= 5) break;
-    fontSize -= 6;
+    fontSize -= 4;
   }
 
   const lineH   = fontSize * 1.38;
   const totalH  = lineH * lines.length;
-  const startY  = box.y + Math.max(16, (box.height - totalH) / 2);
+  const startY  = box.y + Math.max(11, (box.height - totalH) / 2);
   const positioned = [];
 
   lines.forEach((line, li) => {
@@ -171,19 +175,19 @@ function layoutTextRuns(text, box, theme) {
 function drawBoldText(ctx, text, box, progress, theme) {
   if (!text || progress <= 0) return;
 
-  const runs   = layoutTextRuns(text, box, theme);
+  const runs    = layoutTextRuns(text, box, theme);
   const letters = runs.flatMap((r) => r.text.split("").map((ch) => ({ ch, run: r })));
-  const total  = Math.max(1, letters.length);
+  const total   = Math.max(1, letters.length);
   const visible = clamp(Math.ceil(total * progress), 0, total);
-  let counter  = 0;
+  let counter   = 0;
 
   for (const run of runs) {
     const chars = run.text.split("");
     let x = run.x;
 
     for (const ch of chars) {
-      const w   = measureTextWidth(ch || " ", run.fontSize);
-      const lp  = clamp(visible - counter, 0, 1);
+      const w  = measureTextWidth(ch || " ", run.fontSize);
+      const lp = clamp(visible - counter, 0, 1);
       counter++;
 
       if (lp <= 0) { x += w; continue; }
@@ -195,11 +199,11 @@ function drawBoldText(ctx, text, box, progress, theme) {
       ctx.font = `900 ${run.fontSize}px ${BOLD_FONT}`;
       ctx.textBaseline = "top";
 
-      // Shadow for depth
-      ctx.shadowColor  = "rgba(0,0,0,0.22)";
-      ctx.shadowBlur   = run.fontSize * 0.18;
-      ctx.shadowOffsetX = 3;
-      ctx.shadowOffsetY = 4;
+      // Shadow for depth (scaled offsets)
+      ctx.shadowColor   = "rgba(0,0,0,0.22)";
+      ctx.shadowBlur    = run.fontSize * 0.18;
+      ctx.shadowOffsetX = 2;
+      ctx.shadowOffsetY = 3;
 
       // White outline stroke
       ctx.strokeStyle = "#FFFFFF";
@@ -207,7 +211,7 @@ function drawBoldText(ctx, text, box, progress, theme) {
       ctx.lineJoin    = "round";
       ctx.strokeText(ch, x, run.y);
 
-      // Coloured fill (no shadow on fill to avoid double shadow)
+      // Coloured fill
       ctx.shadowColor = "transparent";
       ctx.fillStyle   = run.color;
       ctx.fillText(ch, x, run.y);
@@ -239,8 +243,8 @@ function drawEmojiAnimated(ctx, emoji, cx, cy, maxSize, progress, delay = 0) {
   const alpha = clamp(p * 4, 0, 1);
   const size  = maxSize * Math.max(0, scale);
 
-  // Soft glow ring behind emoji
-  if (alpha > 0.15 && size > 60) {
+  // Soft glow ring behind emoji (threshold scaled to 40 from 60)
+  if (alpha > 0.15 && size > 40) {
     ctx.save();
     ctx.globalAlpha = alpha * 0.12;
     ctx.fillStyle   = "#FFD700";
@@ -265,16 +269,17 @@ function resolveEmojiSet(element) {
 }
 
 // ── Draw the whole emoji cluster for a scene ─────────────────────────────────
+// All sizes and offsets below are the original 1080p values × 2/3, rounded.
 function drawEmojiScene(ctx, scene, box, progress) {
   const visuals = (scene.elements || []).filter(
     (e) => e.type !== "text" && e.type !== "highlight"
   );
 
   if (!visuals.length) {
-    // Fallback: single coin-stack
-    drawEmojiAnimated(ctx, "💰", box.x + box.width / 2, box.y + box.height * 0.38, 320, progress);
-    drawEmojiAnimated(ctx, "✨", box.x + box.width * 0.7, box.y + box.height * 0.18, 100, progress, 0.3);
-    drawEmojiAnimated(ctx, "💵", box.x + box.width * 0.3, box.y + box.height * 0.6,  110, progress, 0.45);
+    // Fallback: single coin-stack (213 ← 320 × 2/3)
+    drawEmojiAnimated(ctx, "💰", box.x + box.width / 2, box.y + box.height * 0.38, 213, progress);
+    drawEmojiAnimated(ctx, "✨", box.x + box.width * 0.7, box.y + box.height * 0.18,  67, progress, 0.30);
+    drawEmojiAnimated(ctx, "💵", box.x + box.width * 0.3, box.y + box.height * 0.60,  73, progress, 0.45);
     return;
   }
 
@@ -283,44 +288,45 @@ function drawEmojiScene(ctx, scene, box, progress) {
     const cx = box.x + box.width / 2;
     const cy = box.y + box.height * 0.38;
 
-    // Main hero emoji
-    drawEmojiAnimated(ctx, emojis[0], cx, cy, 340, progress, 0);
+    // Main hero emoji (227 ← 340 × 2/3)
+    drawEmojiAnimated(ctx, emojis[0], cx, cy, 227, progress, 0);
 
-    // Orbiting decorations
+    // Orbiting decorations — dx/dy/size all × 2/3
     const orbit = [
-      { dx: -270, dy: -130, size: 140, delay: 0.22 },
-      { dx:  280, dy:  -90, size: 125, delay: 0.32 },
-      { dx: -190, dy:  210, size: 105, delay: 0.40 },
-      { dx:  240, dy:  200, size: 115, delay: 0.35 },
+      { dx: -180, dy: -87,  size: 93, delay: 0.22 },
+      { dx:  187, dy: -60,  size: 83, delay: 0.32 },
+      { dx: -127, dy:  140, size: 70, delay: 0.40 },
+      { dx:  160, dy:  133, size: 77, delay: 0.35 },
     ];
     orbit.forEach((o, i) => {
       drawEmojiAnimated(ctx, emojis[i + 1] || "✨", cx + o.dx, cy + o.dy, o.size, progress, o.delay);
     });
 
   } else if (visuals.length === 2) {
+    // Sizes: 260→173, 240→160 ; decorator offset: 110→73, 80→53 ; deco size 95→63
     const cols = [
-      { cx: box.x + box.width * 0.28, cy: box.y + box.height * 0.38, size: 260, delay: 0    },
-      { cx: box.x + box.width * 0.72, cy: box.y + box.height * 0.42, size: 240, delay: 0.18 },
+      { cx: box.x + box.width * 0.28, cy: box.y + box.height * 0.38, size: 173, delay: 0    },
+      { cx: box.x + box.width * 0.72, cy: box.y + box.height * 0.42, size: 160, delay: 0.18 },
     ];
     visuals.slice(0, 2).forEach((el, i) => {
       const emojis = resolveEmojiSet(el);
       const c = cols[i];
-      drawEmojiAnimated(ctx, emojis[0], c.cx, c.cy, c.size, progress, c.delay);
-      drawEmojiAnimated(ctx, emojis[1] || "✨", c.cx + 110, c.cy - 80, 95, progress, c.delay + 0.18);
+      drawEmojiAnimated(ctx, emojis[0],          c.cx,       c.cy,      c.size, progress, c.delay);
+      drawEmojiAnimated(ctx, emojis[1] || "✨",  c.cx + 73,  c.cy - 53,     63, progress, c.delay + 0.18);
     });
 
   } else {
-    // 3+ visuals: triangle arrangement
+    // 3+ visuals: triangle — sizes 220→147, 200→133 ; deco 85→57, 55→37, 75→50
     const tri = [
-      { cx: box.x + box.width * 0.50, cy: box.y + box.height * 0.27, size: 220, delay: 0    },
-      { cx: box.x + box.width * 0.24, cy: box.y + box.height * 0.64, size: 200, delay: 0.16 },
-      { cx: box.x + box.width * 0.76, cy: box.y + box.height * 0.64, size: 200, delay: 0.26 },
+      { cx: box.x + box.width * 0.50, cy: box.y + box.height * 0.27, size: 147, delay: 0    },
+      { cx: box.x + box.width * 0.24, cy: box.y + box.height * 0.64, size: 133, delay: 0.16 },
+      { cx: box.x + box.width * 0.76, cy: box.y + box.height * 0.64, size: 133, delay: 0.26 },
     ];
     visuals.slice(0, 3).forEach((el, i) => {
       const emojis = resolveEmojiSet(el);
       const c = tri[i];
-      drawEmojiAnimated(ctx, emojis[0], c.cx, c.cy, c.size, progress, c.delay);
-      drawEmojiAnimated(ctx, "✨", c.cx + 85, c.cy - 55, 75, progress, c.delay + 0.22);
+      drawEmojiAnimated(ctx, emojis[0], c.cx,       c.cy,     c.size, progress, c.delay);
+      drawEmojiAnimated(ctx, "✨",       c.cx + 57,  c.cy - 37,    50, progress, c.delay + 0.22);
     });
   }
 }
@@ -331,52 +337,52 @@ function drawThemedBackground(ctx, theme) {
   ctx.fillStyle = theme.bg;
   ctx.fillRect(0, 0, W, H);
 
-  // Large soft blob (bottom-right)
+  // Large soft blob — bottom-right (radius 280 ← 420 × 2/3)
   ctx.save();
   ctx.globalAlpha = 0.08;
   ctx.fillStyle   = theme.accent;
   ctx.beginPath();
-  ctx.arc(W * 0.88, H * 0.74, 420, 0, Math.PI * 2);
+  ctx.arc(W * 0.88, H * 0.74, 280, 0, Math.PI * 2);
   ctx.fill();
   ctx.restore();
 
-  // Small blob (top-left)
+  // Small blob — top-left (radius 140 ← 210 × 2/3)
   ctx.save();
   ctx.globalAlpha = 0.07;
   ctx.fillStyle   = theme.highlight;
   ctx.beginPath();
-  ctx.arc(W * 0.14, H * 0.14, 210, 0, Math.PI * 2);
+  ctx.arc(W * 0.14, H * 0.14, 140, 0, Math.PI * 2);
   ctx.fill();
   ctx.restore();
 
-  // Top accent bar
+  // Top accent bar (height 9 ← 14 × 2/3)
   ctx.fillStyle = theme.accent;
-  ctx.fillRect(0, 0, W, 14);
+  ctx.fillRect(0, 0, W, 9);
 
-  // Separator between text zone and visual zone
+  // Separator between text zone and visual zone (y 435 ← 652 × 2/3)
   ctx.save();
   ctx.strokeStyle = theme.accent;
-  ctx.lineWidth   = 4;
+  ctx.lineWidth   = 3;
   ctx.globalAlpha = 0.25;
-  ctx.setLineDash([24, 14]);
+  ctx.setLineDash([16, 9]);
   ctx.beginPath();
-  ctx.moveTo(60, 652);
-  ctx.lineTo(W - 60, 652);
+  ctx.moveTo(40, 435);
+  ctx.lineTo(W - 40, 435);
   ctx.stroke();
   ctx.setLineDash([]);
   ctx.restore();
 }
 
-// ── Scene layout (fixed; only the API shape matters for renderer compat) ─────
+// ── Scene layout (scaled from 1080p originals) ────────────────────────────────
 function generateSceneLayout(scene, index) {
   return {
-    layoutType: "top-text-bottom-animation",
-    textBox:    { x: 60, y: 130, width: 960, height: 480 },
-    visualBox:  { x: 60, y: 670, width: 960, height: 1110 },
-    entry:      "scale",
-    speed:      1.0,
-    orderBias:  0.5,
-    seed:       hashSeed(`${scene.text}|${index}|layout`),
+    layoutType:  "top-text-bottom-animation",
+    textBox:     { x: 40, y: 87,  width: 640, height: 320 },
+    visualBox:   { x: 40, y: 447, width: 640, height: 740 },
+    entry:       "scale",
+    speed:       1.0,
+    orderBias:   0.5,
+    seed:        hashSeed(`${scene.text}|${index}|layout`),
     microShiftX: 0,
     microShiftY: 0,
     splitRows:   1,
@@ -408,17 +414,14 @@ function renderScene(ctx, scenePlan, currentTime, frameIndex) {
   const sceneIndex = typeof timings.sceneIndex === "number" ? timings.sceneIndex : 0;
   const theme      = SCENE_THEMES[sceneIndex % SCENE_THEMES.length];
 
-  // 1. Themed background (replaces the white fill from renderer)
   drawThemedBackground(ctx, theme);
 
-  // 2. Text — appears quickly at scene start
   const textProgress = clamp(
     (currentTime - timings.textStart) / Math.max(0.001, timings.textEnd - timings.textStart),
     0, 1
   );
   drawBoldText(ctx, scene.text, layout.textBox, textProgress, theme);
 
-  // 3. Emoji visuals — animate after text settles
   const drawProgress = clamp(
     (currentTime - timings.drawStart) / Math.max(0.001, timings.drawEnd - timings.drawStart),
     0, 1

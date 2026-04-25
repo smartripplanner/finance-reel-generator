@@ -628,13 +628,14 @@
   let historyItems   = [];
 
   // ─── Pipeline step boundaries (mirrors server milestones) ────────────────────
-  // script: 2–10 | audio: 12–25 | frames: 60–80 | encode: 95–100
+  // script: 2–10 | audio: 12–25 | frames+encode: 30–95 (streaming — concurrent)
   function pipelineState(pct) {
     return {
       script: pct >= 2  ? (pct >= 10 ? "done" : "active") : "",
       audio:  pct >= 12 ? (pct >= 25 ? "done" : "active") : "",
-      frames: pct >= 60 ? (pct >= 80 ? "done" : "active") : "",
-      encode: pct >= 95 ? (pct >= 100 ? "done" : "active") : "",
+      // Frames and encode run simultaneously via JPEG→FFmpeg stdin pipe
+      frames: pct >= 30 ? (pct >= 95 ? "done" : "active") : "",
+      encode: pct >= 30 ? (pct >= 95 ? "done" : "active") : "",
     };
   }
 
@@ -680,18 +681,17 @@
   }
 
   function stepSubtitle(step, pct) {
-    if (!step || step === "Queued…")           return "Job is queued — starting soon";
-    if (/reconnect/i.test(step))               return "Checking job status…";
-    if (/generating script/i.test(step))       return "Writing Hinglish scenes with Gemini AI";
-    if (/script ready/i.test(step))            return "Script generated ✓";
-    if (/voiceover|creating/i.test(step))      return "Synthesising Hindi audio with ElevenLabs";
-    if (/audio ready/i.test(step))             return "Voiceover ready ✓";
-    if (/rendering frames/i.test(step))        return `Painting emoji animations (1080 × 1920) — ${pct}%`;
-    if (/frames done/i.test(step))             return "All frames rendered ✓";
-    if (/encoding/i.test(step))                return "Stitching frames + audio with FFmpeg";
-    if (/timed out/i.test(step))               return "Job exceeded 5 min limit. Please retry.";
-    if (/failed/i.test(step))                  return "An error occurred — see message above.";
-    if (/done/i.test(step))                    return "Your reel is ready!";
+    if (!step || step === "Queued…")             return "Job is queued — starting soon";
+    if (/reconnect/i.test(step))                 return "Checking job status…";
+    if (/generating script/i.test(step))         return "Writing Hinglish scenes with Gemini AI";
+    if (/script ready/i.test(step))              return "Script generated ✓";
+    if (/voiceover|creating voiceover/i.test(step)) return "Synthesising Hindi audio with ElevenLabs";
+    if (/audio ready/i.test(step))               return "Voiceover ready ✓";
+    if (/rendering.*encod|encod.*rendering/i.test(step))
+                                                 return `Streaming frames to encoder (720 × 1280) — ${pct}%`;
+    if (/timed out/i.test(step))                 return "Job exceeded 5 min limit. Please retry.";
+    if (/failed/i.test(step))                    return "An error occurred — see message above.";
+    if (/done/i.test(step))                      return "Your reel is ready!";
     return "This usually takes 40–90 seconds";
   }
 
