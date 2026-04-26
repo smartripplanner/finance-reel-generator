@@ -36,7 +36,7 @@ function preprocessText(text, voiceId) {
     // Devanagari path: only do minimal numeric/symbol cleanup, skip phonetic engine
     return String(text || "")
       .replace(/₹/g, "rupees ")
-      .replace(/Rs\.?\s*/gi, "rupees ")
+      .replace(/\bRs\.?\s*/gi, "rupees ")
       .replace(/%/g, " percent")
       .replace(/\s+/g, " ")
       .trim();
