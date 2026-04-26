@@ -1,0 +1,15 @@
+[
+  {
+    "word": "sunno",
+    "normalized_word": "sunno",
+    "phonetic_version": "suno",
+    "phonetic_tts": "suno",
+    "language_type": "Hindi",
+    "category": "cta",
+    "replace_with_if_needed": "Listen",
+    "tts_risk_score": "medium",
+    "source": "admin",
+    "created_at": "2026-04-26T07:32:22.045Z",
+    "updated_at": "2026-04-26T07:32:22.045Z"
+  }
+]

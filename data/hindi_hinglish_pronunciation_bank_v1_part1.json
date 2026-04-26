@@ -1,0 +1,370 @@
+{
+  "meta": {
+    "version": "v1",
+    "purpose": "tts_pronunciation_cleanup_for_instagram_finance_reels",
+    "language_focus": ["Hindi", "Hinglish"],
+    "notes": "Use phonetic_version before TTS. Use replace_with_if_needed if pronunciation still poor."
+  },
+  "pronunciation_bank": [
+    {
+      "word": "paisa",
+      "normalized_word": "paisa",
+      "phonetic_version": "pai-saa",
+      "language_type": "Hindi",
+      "category": "money",
+      "replace_with_if_needed": "money",
+      "tts_risk_score": "low"
+    },
+    {
+      "word": "paise",
+      "normalized_word": "paise",
+      "phonetic_version": "pai-say",
+      "language_type": "Hindi",
+      "category": "money",
+      "replace_with_if_needed": "money",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "fayda",
+      "normalized_word": "fayda",
+      "phonetic_version": "faa-yda",
+      "language_type": "Hindi",
+      "category": "benefit",
+      "replace_with_if_needed": "benefit",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "nuksan",
+      "normalized_word": "nuksan",
+      "phonetic_version": "nuk-saan",
+      "language_type": "Hindi",
+      "category": "loss",
+      "replace_with_if_needed": "loss",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "mehengai",
+      "normalized_word": "mehengai",
+      "phonetic_version": "meh-hen-gaai",
+      "language_type": "Hindi",
+      "category": "inflation",
+      "replace_with_if_needed": "inflation",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "mahina",
+      "normalized_word": "mahina",
+      "phonetic_version": "ma-hee-naa",
+      "language_type": "Hindi",
+      "category": "time",
+      "replace_with_if_needed": "month",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "mahine",
+      "normalized_word": "mahine",
+      "phonetic_version": "ma-hee-nay",
+      "language_type": "Hindi",
+      "category": "time",
+      "replace_with_if_needed": "months",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "saal",
+      "normalized_word": "saal",
+      "phonetic_version": "saa-l",
+      "language_type": "Hindi",
+      "category": "time",
+      "replace_with_if_needed": "year",
+      "tts_risk_score": "low"
+    },
+    {
+      "word": "jaldi",
+      "normalized_word": "jaldi",
+      "phonetic_version": "jul-dee",
+      "language_type": "Hindi",
+      "category": "urgency",
+      "replace_with_if_needed": "fast",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "galti",
+      "normalized_word": "galti",
+      "phonetic_version": "gul-tee",
+      "language_type": "Hindi",
+      "category": "mistake",
+      "replace_with_if_needed": "mistake",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "zindagi",
+      "normalized_word": "zindagi",
+      "phonetic_version": "zin-da-gee",
+      "language_type": "Hindi",
+      "category": "life",
+      "replace_with_if_needed": "life",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "ameer",
+      "normalized_word": "ameer",
+      "phonetic_version": "uh-meer",
+      "language_type": "Hindi",
+      "category": "wealth",
+      "replace_with_if_needed": "rich",
+      "tts_risk_score": "low"
+    },
+    {
+      "word": "gareeb",
+      "normalized_word": "gareeb",
+      "phonetic_version": "guh-reeb",
+      "language_type": "Hindi",
+      "category": "wealth",
+      "replace_with_if_needed": "poor",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "bachat",
+      "normalized_word": "bachat",
+      "phonetic_version": "buh-chat",
+      "language_type": "Hindi",
+      "category": "saving",
+      "replace_with_if_needed": "saving",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "karz",
+      "normalized_word": "karz",
+      "phonetic_version": "kurz",
+      "language_type": "Hindi",
+      "category": "debt",
+      "replace_with_if_needed": "debt",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "udhari",
+      "normalized_word": "udhari",
+      "phonetic_version": "u-dhaa-ree",
+      "language_type": "Hindi",
+      "category": "debt",
+      "replace_with_if_needed": "loan",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "munafa",
+      "normalized_word": "munafa",
+      "phonetic_version": "mu-naa-faa",
+      "language_type": "Hindi",
+      "category": "profit",
+      "replace_with_if_needed": "profit",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "nivesh",
+      "normalized_word": "nivesh",
+      "phonetic_version": "ni-vaysh",
+      "language_type": "Hindi",
+      "category": "investment",
+      "replace_with_if_needed": "investment",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "kamai",
+      "normalized_word": "kamai",
+      "phonetic_version": "ku-maa-ee",
+      "language_type": "Hindi",
+      "category": "income",
+      "replace_with_if_needed": "income",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "kharcha",
+      "normalized_word": "kharcha",
+      "phonetic_version": "khar-chaa",
+      "language_type": "Hindi",
+      "category": "expense",
+      "replace_with_if_needed": "expense",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "log",
+      "normalized_word": "log",
+      "phonetic_version": "loag",
+      "language_type": "Hindi",
+      "category": "people",
+      "replace_with_if_needed": "people",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "sab",
+      "normalized_word": "sab",
+      "phonetic_version": "sub",
+      "language_type": "Hindi",
+      "category": "people",
+      "replace_with_if_needed": "everyone",
+      "tts_risk_score": "low"
+    },
+    {
+      "word": "kaise",
+      "normalized_word": "kaise",
+      "phonetic_version": "kai-say",
+      "language_type": "Hindi",
+      "category": "question",
+      "replace_with_if_needed": "how",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "kyun",
+      "normalized_word": "kyun",
+      "phonetic_version": "kyoon",
+      "language_type": "Hindi",
+      "category": "question",
+      "replace_with_if_needed": "why",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "kya",
+      "normalized_word": "kya",
+      "phonetic_version": "kyaa",
+      "language_type": "Hindi",
+      "category": "question",
+      "replace_with_if_needed": "what",
+      "tts_risk_score": "low"
+    },
+    {
+      "word": "sahi",
+      "normalized_word": "sahi",
+      "phonetic_version": "suh-hee",
+      "language_type": "Hindi",
+      "category": "quality",
+      "replace_with_if_needed": "right",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "galat",
+      "normalized_word": "galat",
+      "phonetic_version": "guh-lut",
+      "language_type": "Hindi",
+      "category": "quality",
+      "replace_with_if_needed": "wrong",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "smart log",
+      "normalized_word": "smart log",
+      "phonetic_version": "smart loag",
+      "language_type": "Hinglish",
+      "category": "people",
+      "replace_with_if_needed": "smart people",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "salary aayi",
+      "normalized_word": "salary aayi",
+      "phonetic_version": "sal-uh-ree aa-yee",
+      "language_type": "Hinglish",
+      "category": "salary",
+      "replace_with_if_needed": "salary came",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "paisa gaya",
+      "normalized_word": "paisa gaya",
+      "phonetic_version": "pai-saa guh-yaa",
+      "language_type": "Hinglish",
+      "category": "money",
+      "replace_with_if_needed": "money gone",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "follow karo",
+      "normalized_word": "follow karo",
+      "phonetic_version": "fa-lo ka-ro",
+      "language_type": "Hinglish",
+      "category": "cta",
+      "replace_with_if_needed": "follow now",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "save karo",
+      "normalized_word": "save karo",
+      "phonetic_version": "sayv ka-ro",
+      "language_type": "Hinglish",
+      "category": "cta",
+      "replace_with_if_needed": "save now",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "share karo",
+      "normalized_word": "share karo",
+      "phonetic_version": "shair ka-ro",
+      "language_type": "Hinglish",
+      "category": "cta",
+      "replace_with_if_needed": "share now",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "invest karo",
+      "normalized_word": "invest karo",
+      "phonetic_version": "in-vest ka-ro",
+      "language_type": "Hinglish",
+      "category": "investment",
+      "replace_with_if_needed": "invest now",
+      "tts_risk_score": "low"
+    },
+    {
+      "word": "loss ho gaya",
+      "normalized_word": "loss ho gaya",
+      "phonetic_version": "loss ho guh-yaa",
+      "language_type": "Hinglish",
+      "category": "loss",
+      "replace_with_if_needed": "loss happened",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "profit hua",
+      "normalized_word": "profit hua",
+      "phonetic_version": "pro-fit hu-aa",
+      "language_type": "Hinglish",
+      "category": "profit",
+      "replace_with_if_needed": "profit made",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "1 lakh",
+      "normalized_word": "1 lakh",
+      "phonetic_version": "ek laakh",
+      "language_type": "Hindi",
+      "category": "number",
+      "replace_with_if_needed": "one lakh",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "10 lakh",
+      "normalized_word": "10 lakh",
+      "phonetic_version": "dus laakh",
+      "language_type": "Hindi",
+      "category": "number",
+      "replace_with_if_needed": "ten lakh",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "1 crore",
+      "normalized_word": "1 crore",
+      "phonetic_version": "ek croar",
+      "language_type": "Hindi",
+      "category": "number",
+      "replace_with_if_needed": "one crore",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "90 percent log",
+      "normalized_word": "90 percent log",
+      "phonetic_version": "ninety percent loag",
+      "language_type": "Hinglish",
+      "category": "hook",
+      "replace_with_if_needed": "most people",
+      "tts_risk_score": "high"
+    }
+  ]
+}

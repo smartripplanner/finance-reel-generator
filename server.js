@@ -7,6 +7,7 @@ app.use(express.static("public"));
 app.use("/output", express.static("output"));
 
 app.use("/generate", require("./routes/generate"));
+app.use("/admin",    require("./routes/admin"));
 
 // ── Health check (used by Render uptime monitoring) ───────────────────────────
 app.get("/health", (_req, res) => {

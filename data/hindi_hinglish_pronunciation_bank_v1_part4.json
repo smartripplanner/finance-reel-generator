@@ -1,0 +1,357 @@
+{
+  "meta": {
+    "version": "v1_part4",
+    "purpose": "tts_pronunciation_cleanup_for_instagram_finance_reels",
+    "language_focus": ["Hindi", "Hinglish"],
+    "notes": "Continuation pack. Merge with previous pronunciation_bank arrays."
+  },
+  "pronunciation_bank": [
+    {
+      "word": "sab log",
+      "normalized_word": "sab log",
+      "phonetic_version": "sub loag",
+      "language_type": "Hindi",
+      "category": "people",
+      "replace_with_if_needed": "everyone",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "kuch log",
+      "normalized_word": "kuch log",
+      "phonetic_version": "kuch loag",
+      "language_type": "Hindi",
+      "category": "people",
+      "replace_with_if_needed": "some people",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "har koi",
+      "normalized_word": "har koi",
+      "phonetic_version": "hur ko-ee",
+      "language_type": "Hindi",
+      "category": "people",
+      "replace_with_if_needed": "everyone",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "koi nahi",
+      "normalized_word": "koi nahi",
+      "phonetic_version": "ko-ee nuh-hee",
+      "language_type": "Hindi",
+      "category": "people",
+      "replace_with_if_needed": "no one",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "ghar wale",
+      "normalized_word": "ghar wale",
+      "phonetic_version": "ghar waa-lay",
+      "language_type": "Hindi",
+      "category": "family",
+      "replace_with_if_needed": "family",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "maa baap",
+      "normalized_word": "maa baap",
+      "phonetic_version": "maa baap",
+      "language_type": "Hindi",
+      "category": "family",
+      "replace_with_if_needed": "parents",
+      "tts_risk_score": "low"
+    },
+    {
+      "word": "bachche",
+      "normalized_word": "bachche",
+      "phonetic_version": "buch-chay",
+      "language_type": "Hindi",
+      "category": "family",
+      "replace_with_if_needed": "kids",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "jawani",
+      "normalized_word": "jawani",
+      "phonetic_version": "ju-waa-nee",
+      "language_type": "Hindi",
+      "category": "age",
+      "replace_with_if_needed": "youth",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "budhape mein",
+      "normalized_word": "budhape mein",
+      "phonetic_version": "boo-dhaa-pay mayn",
+      "language_type": "Hindi",
+      "category": "retirement",
+      "replace_with_if_needed": "in old age",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "future mein",
+      "normalized_word": "future mein",
+      "phonetic_version": "fyoo-chur mayn",
+      "language_type": "Hinglish",
+      "category": "planning",
+      "replace_with_if_needed": "in future",
+      "tts_risk_score": "medium"
+    },
+
+    {
+      "word": "paise bachao",
+      "normalized_word": "paise bachao",
+      "phonetic_version": "pai-say bu-chaa-o",
+      "language_type": "Hindi",
+      "category": "saving",
+      "replace_with_if_needed": "save money",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "paise uda diye",
+      "normalized_word": "paise uda diye",
+      "phonetic_version": "pai-say u-daa di-yay",
+      "language_type": "Hindi",
+      "category": "expense",
+      "replace_with_if_needed": "spent all money",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "salary aate hi",
+      "normalized_word": "salary aate hi",
+      "phonetic_version": "sal-uh-ree aa-tay hee",
+      "language_type": "Hinglish",
+      "category": "salary",
+      "replace_with_if_needed": "as soon as salary comes",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "salary ke baad",
+      "normalized_word": "salary ke baad",
+      "phonetic_version": "sal-uh-ree kay baad",
+      "language_type": "Hinglish",
+      "category": "salary",
+      "replace_with_if_needed": "after salary",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "mahine ke end mein",
+      "normalized_word": "mahine ke end mein",
+      "phonetic_version": "ma-hee-nay kay end mayn",
+      "language_type": "Hinglish",
+      "category": "salary",
+      "replace_with_if_needed": "at month end",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "paisa khatam",
+      "normalized_word": "paisa khatam",
+      "phonetic_version": "pai-saa kha-tum",
+      "language_type": "Hindi",
+      "category": "money",
+      "replace_with_if_needed": "money finished",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "balance zero",
+      "normalized_word": "balance zero",
+      "phonetic_version": "ba-luns zee-ro",
+      "language_type": "Hinglish",
+      "category": "money",
+      "replace_with_if_needed": "zero balance",
+      "tts_risk_score": "low"
+    },
+    {
+      "word": "account khaali",
+      "normalized_word": "account khaali",
+      "phonetic_version": "uh-count khaa-lee",
+      "language_type": "Hinglish",
+      "category": "money",
+      "replace_with_if_needed": "empty account",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "khali jeb",
+      "normalized_word": "khali jeb",
+      "phonetic_version": "khaa-lee jayb",
+      "language_type": "Hindi",
+      "category": "money",
+      "replace_with_if_needed": "empty pocket",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "jeb bhar lo",
+      "normalized_word": "jeb bhar lo",
+      "phonetic_version": "jayb bhar lo",
+      "language_type": "Hindi",
+      "category": "money",
+      "replace_with_if_needed": "fill your pocket",
+      "tts_risk_score": "high"
+    },
+
+    {
+      "word": "soch badlo",
+      "normalized_word": "soch badlo",
+      "phonetic_version": "soch bud-lo",
+      "language_type": "Hindi",
+      "category": "mindset",
+      "replace_with_if_needed": "change mindset",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "aadat badlo",
+      "normalized_word": "aadat badlo",
+      "phonetic_version": "aa-dut bud-lo",
+      "language_type": "Hindi",
+      "category": "mindset",
+      "replace_with_if_needed": "change habit",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "smart socho",
+      "normalized_word": "smart socho",
+      "phonetic_version": "smart so-cho",
+      "language_type": "Hinglish",
+      "category": "mindset",
+      "replace_with_if_needed": "think smart",
+      "tts_risk_score": "low"
+    },
+    {
+      "word": "future socho",
+      "normalized_word": "future socho",
+      "phonetic_version": "fyoo-chur so-cho",
+      "language_type": "Hinglish",
+      "category": "planning",
+      "replace_with_if_needed": "think future",
+      "tts_risk_score": "low"
+    },
+    {
+      "word": "long term socho",
+      "normalized_word": "long term socho",
+      "phonetic_version": "long term so-cho",
+      "language_type": "Hinglish",
+      "category": "planning",
+      "replace_with_if_needed": "think long term",
+      "tts_risk_score": "low"
+    },
+
+    {
+      "word": "jaldi ameer",
+      "normalized_word": "jaldi ameer",
+      "phonetic_version": "jul-dee uh-meer",
+      "language_type": "Hinglish",
+      "category": "wealth",
+      "replace_with_if_needed": "rich fast",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "crorepati banna",
+      "normalized_word": "crorepati banna",
+      "phonetic_version": "cro-ray-puh-tee bun-naa",
+      "language_type": "Hindi",
+      "category": "wealth",
+      "replace_with_if_needed": "become millionaire",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "lakhpati banna",
+      "normalized_word": "lakhpati banna",
+      "phonetic_version": "laakh-puh-tee bun-naa",
+      "language_type": "Hindi",
+      "category": "wealth",
+      "replace_with_if_needed": "become lakh owner",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "income double",
+      "normalized_word": "income double",
+      "phonetic_version": "in-kum dub-ul",
+      "language_type": "Hinglish",
+      "category": "income",
+      "replace_with_if_needed": "double income",
+      "tts_risk_score": "low"
+    },
+    {
+      "word": "paise ka game",
+      "normalized_word": "paise ka game",
+      "phonetic_version": "pai-say kaa gaym",
+      "language_type": "Hinglish",
+      "category": "money",
+      "replace_with_if_needed": "money game",
+      "tts_risk_score": "medium"
+    },
+
+    {
+      "word": "tax bachao",
+      "normalized_word": "tax bachao",
+      "phonetic_version": "taks bu-chaa-o",
+      "language_type": "Hinglish",
+      "category": "tax",
+      "replace_with_if_needed": "save tax",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "loan chukao",
+      "normalized_word": "loan chukao",
+      "phonetic_version": "loan chu-kaao",
+      "language_type": "Hinglish",
+      "category": "debt",
+      "replace_with_if_needed": "repay loan",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "EMI bharo",
+      "normalized_word": "emi bharo",
+      "phonetic_version": "ee-em-eye bha-ro",
+      "language_type": "Hinglish",
+      "category": "debt",
+      "replace_with_if_needed": "pay EMI",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "SIP chalu karo",
+      "normalized_word": "sip chalu karo",
+      "phonetic_version": "ess-eye-pee chaa-loo ka-ro",
+      "language_type": "Hinglish",
+      "category": "investment",
+      "replace_with_if_needed": "start SIP",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "mutual fund samjho",
+      "normalized_word": "mutual fund samjho",
+      "phonetic_version": "myoo-chu-ul fund sum-jho",
+      "language_type": "Hinglish",
+      "category": "investment",
+      "replace_with_if_needed": "understand mutual funds",
+      "tts_risk_score": "medium"
+    },
+
+    {
+      "word": "abhi save karo",
+      "normalized_word": "abhi save karo",
+      "phonetic_version": "ub-hee sayv ka-ro",
+      "language_type": "Hinglish",
+      "category": "cta",
+      "replace_with_if_needed": "save now",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "friend ko bhejo",
+      "normalized_word": "friend ko bhejo",
+      "phonetic_version": "frend ko bhay-jo",
+      "language_type": "Hinglish",
+      "category": "cta",
+      "replace_with_if_needed": "send to friend",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "ghar walon ko bhejo",
+      "normalized_word": "ghar walon ko bhejo",
+      "phonetic_version": "ghar waa-lon ko bhay-jo",
+      "language_type": "Hindi",
+      "category": "cta",
+      "replace_with_if_needed": "send to family",
+      "tts_risk_score": "high"
+    }
+  ]
+}

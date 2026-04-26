@@ -1,0 +1,320 @@
+{
+  "meta": {
+    "version": "v1_part7",
+    "purpose": "tts_pronunciation_cleanup_for_instagram_finance_reels",
+    "language_focus": ["Hindi", "Hinglish"],
+    "notes": "Continuation pack. Merge with previous pronunciation_bank arrays."
+  },
+  "pronunciation_bank": [
+    {
+      "word": "sunो dhyan se",
+      "normalized_word": "suno dhyan se",
+      "phonetic_version": "su-no dhyaan say",
+      "language_type": "Hindi",
+      "category": "hook",
+      "replace_with_if_needed": "listen carefully",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "ek secret bataun",
+      "normalized_word": "ek secret bataun",
+      "phonetic_version": "aik see-kret bu-taa-oon",
+      "language_type": "Hinglish",
+      "category": "hook",
+      "replace_with_if_needed": "let me tell a secret",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "real baat",
+      "normalized_word": "real baat",
+      "phonetic_version": "ree-ul baat",
+      "language_type": "Hinglish",
+      "category": "hook",
+      "replace_with_if_needed": "real talk",
+      "tts_risk_score": "low"
+    },
+    {
+      "word": "seedhi baat",
+      "normalized_word": "seedhi baat",
+      "phonetic_version": "see-dhee baat",
+      "language_type": "Hindi",
+      "category": "hook",
+      "replace_with_if_needed": "straight talk",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "kadwa sach",
+      "normalized_word": "kadwa sach",
+      "phonetic_version": "kud-waa suchh",
+      "language_type": "Hindi",
+      "category": "truth",
+      "replace_with_if_needed": "harsh truth",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "yeh sun lo",
+      "normalized_word": "yeh sun lo",
+      "phonetic_version": "yeh sun lo",
+      "language_type": "Hindi",
+      "category": "hook",
+      "replace_with_if_needed": "listen to this",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "ab dikkat samjho",
+      "normalized_word": "ab dikkat samjho",
+      "phonetic_version": "ub dik-kut sum-jho",
+      "language_type": "Hindi",
+      "category": "hook",
+      "replace_with_if_needed": "now understand the issue",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "sab yahi karte hain",
+      "normalized_word": "sab yahi karte hain",
+      "phonetic_version": "sub yu-hee kur-tay hain",
+      "language_type": "Hindi",
+      "category": "hook",
+      "replace_with_if_needed": "everyone does this",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "phir pachtana padega",
+      "normalized_word": "phir pachtana padega",
+      "phonetic_version": "phir puch-taa-naa pu-day-gaa",
+      "language_type": "Hindi",
+      "category": "fear",
+      "replace_with_if_needed": "you'll regret later",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "yeh chance mat chhodo",
+      "normalized_word": "yeh chance mat chhodo",
+      "phonetic_version": "yeh chance mut cho-do",
+      "language_type": "Hinglish",
+      "category": "urgency",
+      "replace_with_if_needed": "don't miss this chance",
+      "tts_risk_score": "medium"
+    },
+
+    {
+      "word": "paisa kaise bachega",
+      "normalized_word": "paisa kaise bachega",
+      "phonetic_version": "pai-saa kai-say bu-chay-gaa",
+      "language_type": "Hindi",
+      "category": "saving",
+      "replace_with_if_needed": "how money will be saved",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "paise ka flow",
+      "normalized_word": "paise ka flow",
+      "phonetic_version": "pai-say kaa flo",
+      "language_type": "Hinglish",
+      "category": "money",
+      "replace_with_if_needed": "money flow",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "cash banao",
+      "normalized_word": "cash banao",
+      "phonetic_version": "cash bu-naao",
+      "language_type": "Hinglish",
+      "category": "money",
+      "replace_with_if_needed": "build cash",
+      "tts_risk_score": "low"
+    },
+    {
+      "word": "emergency paisa",
+      "normalized_word": "emergency paisa",
+      "phonetic_version": "ee-mer-jun-see pai-saa",
+      "language_type": "Hinglish",
+      "category": "saving",
+      "replace_with_if_needed": "emergency money",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "future fund banao",
+      "normalized_word": "future fund banao",
+      "phonetic_version": "fyoo-chur fund bu-naao",
+      "language_type": "Hinglish",
+      "category": "planning",
+      "replace_with_if_needed": "build future fund",
+      "tts_risk_score": "low"
+    },
+    {
+      "word": "thoda paisa side rakho",
+      "normalized_word": "thoda paisa side rakho",
+      "phonetic_version": "tho-daa pai-saa side rakh-o",
+      "language_type": "Hinglish",
+      "category": "saving",
+      "replace_with_if_needed": "keep some money aside",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "salary ka hissa",
+      "normalized_word": "salary ka hissa",
+      "phonetic_version": "sal-uh-ree kaa his-saa",
+      "language_type": "Hinglish",
+      "category": "salary",
+      "replace_with_if_needed": "part of salary",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "income ka part",
+      "normalized_word": "income ka part",
+      "phonetic_version": "in-kum kaa part",
+      "language_type": "Hinglish",
+      "category": "income",
+      "replace_with_if_needed": "part of income",
+      "tts_risk_score": "low"
+    },
+    {
+      "word": "budget banao",
+      "normalized_word": "budget banao",
+      "phonetic_version": "buj-it bu-naao",
+      "language_type": "Hinglish",
+      "category": "budgeting",
+      "replace_with_if_needed": "make budget",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "budget follow karo",
+      "normalized_word": "budget follow karo",
+      "phonetic_version": "buj-it fa-lo ka-ro",
+      "language_type": "Hinglish",
+      "category": "budgeting",
+      "replace_with_if_needed": "follow budget",
+      "tts_risk_score": "medium"
+    },
+
+    {
+      "word": "sip se shuru karo",
+      "normalized_word": "sip se shuru karo",
+      "phonetic_version": "ess-eye-pee say shu-roo ka-ro",
+      "language_type": "Hinglish",
+      "category": "investment",
+      "replace_with_if_needed": "start with SIP",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "mutual fund easy hai",
+      "normalized_word": "mutual fund easy hai",
+      "phonetic_version": "myoo-chu-ul fund ee-zee hai",
+      "language_type": "Hinglish",
+      "category": "investment",
+      "replace_with_if_needed": "mutual fund is easy",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "long term rakho",
+      "normalized_word": "long term rakho",
+      "phonetic_version": "long term rakh-o",
+      "language_type": "Hinglish",
+      "category": "investment",
+      "replace_with_if_needed": "hold long term",
+      "tts_risk_score": "low"
+    },
+    {
+      "word": "panic mat karo",
+      "normalized_word": "panic mat karo",
+      "phonetic_version": "pan-ik mut ka-ro",
+      "language_type": "Hinglish",
+      "category": "investment",
+      "replace_with_if_needed": "don't panic",
+      "tts_risk_score": "low"
+    },
+    {
+      "word": "dip mein lo",
+      "normalized_word": "dip mein lo",
+      "phonetic_version": "dip mayn lo",
+      "language_type": "Hinglish",
+      "category": "investment",
+      "replace_with_if_needed": "buy in dip",
+      "tts_risk_score": "low"
+    },
+
+    {
+      "word": "tax ka nuksan",
+      "normalized_word": "tax ka nuksan",
+      "phonetic_version": "taks kaa nuk-saan",
+      "language_type": "Hinglish",
+      "category": "tax",
+      "replace_with_if_needed": "tax loss",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "late fee lagegi",
+      "normalized_word": "late fee lagegi",
+      "phonetic_version": "layt fee la-gay-gee",
+      "language_type": "Hinglish",
+      "category": "tax",
+      "replace_with_if_needed": "late fee will apply",
+      "tts_risk_score": "low"
+    },
+    {
+      "word": "loan jaldi chukao",
+      "normalized_word": "loan jaldi chukao",
+      "phonetic_version": "loan jul-dee chu-kaao",
+      "language_type": "Hinglish",
+      "category": "debt",
+      "replace_with_if_needed": "repay loan fast",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "credit score bachao",
+      "normalized_word": "credit score bachao",
+      "phonetic_version": "cre-dit skor bu-chaa-o",
+      "language_type": "Hinglish",
+      "category": "debt",
+      "replace_with_if_needed": "protect credit score",
+      "tts_risk_score": "low"
+    },
+
+    {
+      "word": "abhi like karo",
+      "normalized_word": "abhi like karo",
+      "phonetic_version": "ub-hee like ka-ro",
+      "language_type": "Hinglish",
+      "category": "cta",
+      "replace_with_if_needed": "like now",
+      "tts_risk_score": "low"
+    },
+    {
+      "word": "save zaroor karo",
+      "normalized_word": "save zaroor karo",
+      "phonetic_version": "sayv za-roor ka-ro",
+      "language_type": "Hinglish",
+      "category": "cta",
+      "replace_with_if_needed": "do save",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "reel share karo",
+      "normalized_word": "reel share karo",
+      "phonetic_version": "reel shair ka-ro",
+      "language_type": "Hinglish",
+      "category": "cta",
+      "replace_with_if_needed": "share reel",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "aur tips ke liye follow",
+      "normalized_word": "aur tips ke liye follow",
+      "phonetic_version": "or tips kay lee-yay fa-lo",
+      "language_type": "Hinglish",
+      "category": "cta",
+      "replace_with_if_needed": "follow for more tips",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "next part dekho",
+      "normalized_word": "next part dekho",
+      "phonetic_version": "nekst part day-kho",
+      "language_type": "Hinglish",
+      "category": "cta",
+      "replace_with_if_needed": "watch next part",
+      "tts_risk_score": "medium"
+    }
+  ]
+}

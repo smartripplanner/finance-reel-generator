@@ -7,9 +7,10 @@ const fs         = require("fs");
 const { v4: uuidv4 } = require("uuid");
 
 const { generateScript, generateCaption } = require("../services/gemini");
-const { generateAudio  } = require("../services/elevenlabs");
+const { generateAudio, buildNarration  } = require("../services/elevenlabs");
 // renderFrames now handles both rendering AND encoding via JPEG→stdin pipe
-const { renderFrames   } = require("../services/renderer");
+const { renderFrames       } = require("../services/renderer");
+const { lightQualityCheck  } = require("../services/scriptQualityEngine");
 
 const ROOT       = path.join(__dirname, "..");
 const TEMP_BASE  = path.join(ROOT, "temp");
@@ -183,20 +184,40 @@ async function runJob(jobId) {
     const job = jobs.get(jobId);
     if (!job) return;
 
-    // ── 1 / 3  Script ─────────────────────────────────────────────────────────
+    // ── 1 / 3  Script — generate → light quality check → regenerate once if needed
     patch(jobId, { status: "processing", progress: 2, step: "Generating script…" });
     log(jobId, `script start — "${job.topic}"`);
 
-    const scenes = await generateScript(job.topic);
+    const rawScenes = await generateScript(job.topic);
+    const quality   = lightQualityCheck(rawScenes);
+    let scenes      = rawScenes;
+    let scriptPass  = 1;
 
-    log(jobId, `script done — ${scenes.length} scenes`);
+    if (!quality.passed) {
+      log(jobId, `script pass 1: ${quality.score}/10 — ${quality.reason} — regenerating…`);
+      patch(jobId, { step: "Improving script quality…" });
+      try {
+        const retryScenes   = await generateScript(job.topic);
+        const retryQuality  = lightQualityCheck(retryScenes);
+        scenes     = retryScenes;
+        scriptPass = 2;
+        log(jobId, `script pass 2: ${retryQuality.score}/10`);
+      } catch (retryErr) {
+        log(jobId, `pass 2 error (${retryErr.message}) — using pass 1 scenes`);
+      }
+    } else {
+      log(jobId, `script pass 1: ${quality.score}/10 ✓`);
+    }
+
+    log(jobId, `script done — pass: ${scriptPass} | scenes: ${scenes.length}`);
     patch(jobId, { progress: 10, step: "Script ready…" });
 
     // ── 2 / 3  Audio + Caption (parallel) ────────────────────────────────────
     patch(jobId, { progress: 12, step: "Creating voiceover…" });
     log(jobId, "audio + caption start");
 
-    const narration = scenes.map(s => s.text).join(". ");
+    // Build narration with scene-purpose-aware pauses (hook/reveal get longer beats)
+    const narration = buildNarration(scenes);
     const [, captionData] = await Promise.all([
       generateAudio(narration, audioPath),
       generateCaption(job.topic, scenes).catch(() => ({

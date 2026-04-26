@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pronunciation Manager — Rich Banega Bharat</title>
+<style>
+  :root {
+    --bg: #0f1117; --surface: #1a1d27; --border: #2a2d3e;
+    --accent: #6c63ff; --accent2: #ff6584; --green: #4caf93;
+    --red: #e05c5c; --yellow: #f0b429; --text: #e8eaf0;
+    --muted: #8b90a7; --input-bg: #12151e;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; font-size: 14px; }
+
+  /* ── Login ── */
+  #loginScreen {
+    position: fixed; inset: 0; background: var(--bg);
+    display: flex; align-items: center; justify-content: center; z-index: 9999;
+  }
+  .login-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 16px; padding: 40px; width: 360px; text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,.6);
+  }
+  .login-card h1 { font-size: 22px; margin-bottom: 4px; }
+  .login-card p  { color: var(--muted); font-size: 13px; margin-bottom: 28px; }
+  .login-card input {
+    width: 100%; padding: 12px 16px; border-radius: 8px;
+    border: 1px solid var(--border); background: var(--input-bg); color: var(--text);
+    font-size: 15px; margin-bottom: 16px; outline: none;
+  }
+  .login-card input:focus { border-color: var(--accent); }
+  .btn-primary {
+    width: 100%; padding: 12px; border-radius: 8px; border: none;
+    background: var(--accent); color: #fff; font-size: 15px; font-weight: 600;
+    cursor: pointer; transition: opacity .15s;
+  }
+  .btn-primary:hover { opacity: .88; }
+  #loginErr { color: var(--red); font-size: 13px; margin-top: 12px; }
+
+  /* ── App shell ── */
+  #app { display: none; }
+  header {
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    padding: 0 24px; height: 56px; display: flex; align-items: center; gap: 16px;
+    position: sticky; top: 0; z-index: 100;
+  }
+  header h2 { font-size: 16px; font-weight: 700; flex: 1; }
+  header .pill {
+    background: var(--accent); color: #fff; border-radius: 20px;
+    padding: 3px 10px; font-size: 12px; font-weight: 600;
+  }
+  header .pill.green  { background: var(--green); }
+  header .pill.yellow { background: var(--yellow); color: #222; }
+  .btn-sm {
+    padding: 6px 14px; border-radius: 7px; border: 1px solid var(--border);
+    background: transparent; color: var(--text); font-size: 13px; cursor: pointer;
+    transition: background .15s;
+  }
+  .btn-sm:hover { background: var(--border); }
+  .btn-sm.danger { color: var(--red); border-color: var(--red); }
+  .btn-sm.danger:hover { background: rgba(224,92,92,.12); }
+  .btn-sm.success { color: var(--green); border-color: var(--green); }
+  .btn-sm.success:hover { background: rgba(76,175,147,.12); }
+  .btn-sm.accent { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn-sm.accent:hover { opacity: .88; }
+
+  /* ── Toolbar ── */
+  .toolbar {
+    padding: 14px 24px; display: flex; align-items: center; gap: 10px;
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+  .toolbar input[type=search], .toolbar select {
+    padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border);
+    background: var(--input-bg); color: var(--text); font-size: 13px; outline: none;
+  }
+  .toolbar input[type=search] { width: 240px; }
+  .toolbar input[type=search]:focus, .toolbar select:focus { border-color: var(--accent); }
+  .sep { flex: 1; }
+
+  /* ── Stats bar ── */
+  .stats-bar {
+    padding: 8px 24px; background: var(--bg);
+    display: flex; gap: 20px; align-items: center; border-bottom: 1px solid var(--border);
+    font-size: 12px; color: var(--muted);
+  }
+  .stats-bar span b { color: var(--text); }
+
+  /* ── Table ── */
+  .table-wrap { overflow-x: auto; padding: 0 24px 80px; }
+  table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+  thead th {
+    text-align: left; padding: 10px 12px; font-size: 12px; color: var(--muted);
+    font-weight: 600; text-transform: uppercase; letter-spacing: .04em;
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    cursor: pointer; user-select: none; white-space: nowrap;
+  }
+  thead th:hover { color: var(--text); }
+  thead th .sort-icon { opacity: .4; margin-left: 4px; }
+  thead th.sorted .sort-icon { opacity: 1; color: var(--accent); }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background .1s; }
+  tbody tr:hover { background: var(--surface); }
+  tbody td { padding: 10px 12px; font-size: 13px; vertical-align: middle; }
+  .word-cell { font-weight: 600; color: var(--text); font-size: 14px; }
+  .phonetic-cell { color: var(--accent); font-family: monospace; }
+  .repl-cell { color: var(--green); font-family: monospace; }
+  .cat-badge {
+    display: inline-block; padding: 2px 8px; border-radius: 10px;
+    font-size: 11px; font-weight: 600; background: rgba(108,99,255,.15); color: var(--accent);
+  }
+  .risk-badge {
+    display: inline-block; padding: 2px 8px; border-radius: 10px;
+    font-size: 11px; font-weight: 700;
+  }
+  .risk-high   { background: rgba(224,92,92,.18); color: var(--red); }
+  .risk-medium { background: rgba(240,180,41,.18); color: var(--yellow); }
+  .risk-low    { background: rgba(76,175,147,.18); color: var(--green); }
+  .src-admin  { background: rgba(108,99,255,.15); color: var(--accent); font-size: 11px; padding: 1px 7px; border-radius: 8px; }
+  .src-master { background: rgba(139,144,167,.12); color: var(--muted);  font-size: 11px; padding: 1px 7px; border-radius: 8px; }
+  .actions { display: flex; gap: 6px; }
+
+  /* ── Pagination ── */
+  .pager {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 20px 24px; position: fixed; bottom: 0; left: 0; right: 0;
+    background: var(--bg); border-top: 1px solid var(--border);
+  }
+  .pager button {
+    padding: 6px 14px; border-radius: 7px; border: 1px solid var(--border);
+    background: transparent; color: var(--text); font-size: 13px; cursor: pointer;
+  }
+  .pager button.active { background: var(--accent); border-color: var(--accent); }
+  .pager button:disabled { opacity: .35; cursor: default; }
+  .pager span { color: var(--muted); font-size: 13px; }
+
+  /* ── Modal ── */
+  .modal-backdrop {
+    position: fixed; inset: 0; background: rgba(0,0,0,.75);
+    display: flex; align-items: center; justify-content: center; z-index: 999;
+  }
+  .modal {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+    width: 560px; max-height: 90vh; overflow-y: auto; box-shadow: 0 24px 64px rgba(0,0,0,.7);
+  }
+  .modal-header {
+    padding: 20px 24px 16px; border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .modal-header h3 { font-size: 16px; }
+  .modal-close { background: none; border: none; color: var(--muted); font-size: 22px; cursor: pointer; line-height: 1; }
+  .modal-body { padding: 20px 24px; }
+  .form-row { margin-bottom: 16px; }
+  .form-row label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+  .form-row input, .form-row select, .form-row textarea {
+    width: 100%; padding: 10px 14px; border-radius: 8px;
+    border: 1px solid var(--border); background: var(--input-bg); color: var(--text);
+    font-size: 14px; outline: none;
+  }
+  .form-row input:focus, .form-row select:focus, .form-row textarea:focus { border-color: var(--accent); }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .modal-footer { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 10px; }
+  .hint { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+  /* ── Test panel ── */
+  #testPanel {
+    position: fixed; right: 24px; bottom: 72px; width: 420px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+    box-shadow: 0 16px 48px rgba(0,0,0,.6); z-index: 200; display: none;
+  }
+  #testPanel .tp-header {
+    padding: 14px 18px; border-bottom: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    font-weight: 600; font-size: 14px;
+  }
+  #testPanel .tp-body { padding: 16px 18px; }
+  #testPanel textarea {
+    width: 100%; height: 72px; padding: 10px 12px; border-radius: 8px;
+    border: 1px solid var(--border); background: var(--input-bg); color: var(--text);
+    font-size: 13px; resize: vertical; outline: none; margin-bottom: 10px;
+  }
+  #testPanel textarea:focus { border-color: var(--accent); }
+  #testResult {
+    background: var(--bg); border-radius: 8px; padding: 12px;
+    font-size: 13px; min-height: 56px; border: 1px solid var(--border);
+    font-family: monospace; white-space: pre-wrap; word-break: break-word;
+  }
+  #testResult .unchanged { color: var(--muted); }
+  #testResult .changed   { color: var(--accent); font-weight: 600; }
+  .change-tag { color: var(--yellow); font-size: 11px; margin-top: 8px; display: block; }
+
+  /* ── Toast ── */
+  #toast {
+    position: fixed; top: 70px; left: 50%; transform: translateX(-50%);
+    background: var(--green); color: #fff; padding: 10px 22px; border-radius: 30px;
+    font-size: 13px; font-weight: 600; z-index: 9999; pointer-events: none;
+    opacity: 0; transition: opacity .25s; white-space: nowrap;
+  }
+  #toast.error { background: var(--red); }
+  #toast.show  { opacity: 1; }
+
+  /* ── Empty state ── */
+  .empty { text-align: center; padding: 60px 20px; color: var(--muted); }
+  .empty svg { margin-bottom: 12px; opacity: .4; }
+
+  /* ── Responsive ── */
+  @media (max-width: 700px) {
+    .toolbar input[type=search] { width: 140px; }
+    #testPanel { right: 8px; width: calc(100vw - 16px); }
+    .modal { width: 95vw; }
+    header h2 { font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ LOGIN SCREEN ══ -->
+<div id="loginScreen">
+  <div class="login-card">
+    <h1>🎙️ Pronunciation Manager</h1>
+    <p>Rich Banega Bharat — Admin Panel</p>
+    <input type="password" id="pwInput" placeholder="Enter admin password" autocomplete="current-password">
+    <button class="btn-primary" onclick="doLogin()">Login</button>
+    <div id="loginErr"></div>
+  </div>
+</div>
+
+<!-- ══ APP ══ -->
+<div id="app">
+
+  <!-- Header -->
+  <header>
+    <h2>🎙️ Pronunciation Manager</h2>
+    <span class="pill green" id="hTotalEntries">… entries</span>
+    <span class="pill yellow" id="hPatterns">… patterns</span>
+    <button class="btn-sm success" onclick="showTestPanel()">🔊 Test TTS</button>
+    <button class="btn-sm" onclick="openImport()">⬆ Import</button>
+    <button class="btn-sm" onclick="doExport()">⬇ Export</button>
+    <button class="btn-sm danger" onclick="doLogout()">Logout</button>
+  </header>
+
+  <!-- Stats bar -->
+  <div class="stats-bar">
+    <span>Bank: <b id="sTotal">–</b></span>
+    <span>High risk: <b id="sHigh" style="color:var(--red)">–</b></span>
+    <span>Medium: <b id="sMedium" style="color:var(--yellow)">–</b></span>
+    <span>Low: <b id="sLow" style="color:var(--green)">–</b></span>
+    <span>Phrases: <b id="sPhrases">–</b></span>
+    <span>Admin entries: <b id="sAdmin" style="color:var(--accent)">–</b></span>
+    <span>Active patterns: <b id="sActivePatterns">–</b></span>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <input type="search" id="searchInput" placeholder="🔍  Search word, phonetic, category…" oninput="onSearch()">
+    <select id="riskFilter" onchange="onSearch()">
+      <option value="">All risk levels</option>
+      <option value="high">🔴 High risk</option>
+      <option value="medium">🟡 Medium risk</option>
+      <option value="low">🟢 Low risk</option>
+    </select>
+    <select id="srcFilter" onchange="onSearch()">
+      <option value="">All sources</option>
+      <option value="admin">Admin entries only</option>
+      <option value="master">Master bank only</option>
+    </select>
+    <div class="sep"></div>
+    <button class="btn-sm accent" onclick="openAdd()">+ Add Entry</button>
+  </div>
+
+  <!-- Table -->
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th onclick="sortBy('word')">Word <span class="sort-icon" id="si-word">↕</span></th>
+          <th onclick="sortBy('phonetic_version')">Phonetic (Display) <span class="sort-icon" id="si-phonetic_version">↕</span></th>
+          <th>Phonetic (TTS)</th>
+          <th onclick="sortBy('replace_with_if_needed')">Replacement <span class="sort-icon" id="si-replace_with_if_needed">↕</span></th>
+          <th onclick="sortBy('category')">Category <span class="sort-icon" id="si-category">↕</span></th>
+          <th onclick="sortBy('tts_risk_score')">Risk <span class="sort-icon" id="si-tts_risk_score">↕</span></th>
+          <th>Source</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody">
+        <tr><td colspan="8" class="empty">Loading…</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pager" id="pager"></div>
+
+  <!-- Test Panel -->
+  <div id="testPanel">
+    <div class="tp-header">
+      🔊 TTS Preview
+      <button class="modal-close" onclick="hideTestPanel()">×</button>
+    </div>
+    <div class="tp-body">
+      <textarea id="testInput" placeholder="Enter a sentence to test pronunciation…"></textarea>
+      <select id="voiceSelect" style="width:100%;margin-bottom:10px;padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:var(--input-bg);color:var(--text);font-size:13px;outline:none;">
+        <option value="21m00Tcm4TlvDq8ikWAM">Rachel (default)</option>
+        <option value="EXAVITQu4vr4xnSDxMaL">Bella</option>
+        <option value="yoZ06aMxZJJ28mfd3POQ">Sam (English-heavy)</option>
+        <option value="">Generic</option>
+      </select>
+      <div style="display:flex;gap:8px;margin-bottom:12px;">
+        <button class="btn-sm accent" style="flex:1" onclick="runTest()">▶ Process</button>
+        <button class="btn-sm" onclick="document.getElementById('testInput').value='';document.getElementById('testResult').innerHTML='<span class=unchanged>Output will appear here…</span>'">Clear</button>
+      </div>
+      <div id="testResult"><span class="unchanged">Output will appear here…</span></div>
+    </div>
+  </div>
+
+</div><!-- /#app -->
+
+<!-- ══ ADD/EDIT MODAL ══ -->
+<div class="modal-backdrop" id="entryModal" style="display:none" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modalTitle">Add Entry</h3>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="fKey">
+      <div class="form-row">
+        <label>Word / Phrase *</label>
+        <input id="fWord" placeholder="e.g. galat or sabse badi galti">
+        <div class="hint">Multi-word phrases are matched first (longest match wins)</div>
+      </div>
+      <div class="form-grid">
+        <div class="form-row">
+          <label>Phonetic Version (display)</label>
+          <input id="fPhonetic" placeholder="e.g. gha-lut">
+          <div class="hint">Hyphenated syllables — for documentation</div>
+        </div>
+        <div class="form-row">
+          <label>English Replacement</label>
+          <input id="fReplacement" placeholder="e.g. wrong">
+          <div class="hint">Used when risk = high</div>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="form-row">
+          <label>Language Type</label>
+          <select id="fLang">
+            <option value="Hindi">Hindi</option>
+            <option value="Hinglish">Hinglish</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>TTS Risk Score</label>
+          <select id="fRisk">
+            <option value="high">🔴 High — always use replacement</option>
+            <option value="medium" selected>🟡 Medium — use phonetic hint</option>
+            <option value="low">🟢 Low — TTS handles fine, skip</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <label>Category</label>
+        <input id="fCategory" placeholder="e.g. money, saving, cta, hook, investment…">
+      </div>
+      <div id="previewBox" style="background:var(--bg);border-radius:8px;padding:12px;border:1px solid var(--border);display:none;margin-top:8px;">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;">TTS form that will be applied</div>
+        <div id="previewTts" style="font-family:monospace;color:var(--accent);font-size:14px;"></div>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px;" id="previewRule"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-sm" onclick="closeModal()">Cancel</button>
+      <button class="btn-sm accent" onclick="saveEntry()">Save Entry</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ IMPORT MODAL ══ -->
+<div class="modal-backdrop" id="importModal" style="display:none" onclick="if(event.target===this)closeImport()">
+  <div class="modal" style="width:480px">
+    <div class="modal-header">
+      <h3>Import Pronunciation Entries</h3>
+      <button class="modal-close" onclick="closeImport()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <label>Paste JSON</label>
+        <textarea id="importJson" style="height:200px;font-family:monospace;font-size:12px" placeholder='[{"word":"galat","phonetic_version":"gha-lut","replace_with_if_needed":"wrong","tts_risk_score":"medium","language_type":"Hindi","category":"quality"}]'></textarea>
+        <div class="hint">Array of entries. Existing entries with same word will be overwritten.</div>
+      </div>
+      <div id="importErr" style="color:var(--red);font-size:13px;margin-top:8px;"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-sm" onclick="closeImport()">Cancel</button>
+      <button class="btn-sm accent" onclick="doImport()">Import & Reload</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<script>
+// ══ State ══════════════════════════════════════════════════════════════════════
+let TOKEN     = localStorage.getItem("adm_tok") || "";
+let allItems  = [];
+let page      = 1;
+let pageLimit = 50;
+let totalRows = 0;
+let sortKey   = "word";
+let sortAsc   = true;
+let searchQ   = "";
+let riskF     = "";
+let srcF      = "";
+
+// ══ Auth ═══════════════════════════════════════════════════════════════════════
+async function doLogin() {
+  const pw = document.getElementById("pwInput").value;
+  if (!pw) return;
+  try {
+    const r = await api("/admin/api/login", "POST", { password: pw });
+    TOKEN = r.token;
+    localStorage.setItem("adm_tok", TOKEN);
+    showApp();
+  } catch(e) {
+    document.getElementById("loginErr").textContent = e.message || "Login failed";
+  }
+}
+document.getElementById("pwInput").addEventListener("keydown", e => { if(e.key==="Enter") doLogin(); });
+
+async function doLogout() {
+  await api("/admin/api/logout","POST",{}).catch(()=>{});
+  TOKEN = "";
+  localStorage.removeItem("adm_tok");
+  location.reload();
+}
+
+function showApp() {
+  document.getElementById("loginScreen").style.display = "none";
+  document.getElementById("app").style.display = "block";
+  loadStats();
+  loadEntries();
+}
+
+// On load: check stored token
+if (TOKEN) {
+  api("/admin/api/stats","GET").then(() => showApp()).catch(() => {
+    TOKEN=""; localStorage.removeItem("adm_tok");
+  });
+}
+
+// ══ API helper ═════════════════════════════════════════════════════════════════
+async function api(url, method="GET", body=null) {
+  const opts = {
+    method,
+    headers: { "Content-Type":"application/json", "Authorization": `Bearer ${TOKEN}` },
+  };
+  if (body && method!=="GET") opts.body = JSON.stringify(body);
+  const r = await fetch(url, opts);
+  const j = await r.json();
+  if (!r.ok) throw new Error(j.error || `HTTP ${r.status}`);
+  return j;
+}
+
+// ══ Stats ══════════════════════════════════════════════════════════════════════
+async function loadStats() {
+  try {
+    const s = await api("/admin/api/stats");
+    document.getElementById("sTotal").textContent    = s.total;
+    document.getElementById("sHigh").textContent     = s.high;
+    document.getElementById("sMedium").textContent   = s.medium;
+    document.getElementById("sLow").textContent      = s.low;
+    document.getElementById("sPhrases").textContent  = s.phrases;
+    const adminCount = (await api("/admin/api/entries?source=admin&limit=1")).total;
+    document.getElementById("sAdmin").textContent    = adminCount;
+    const pat = s.patterns || {};
+    const total = (pat.phraseHighSubs||0)+(pat.phraseMediumPhon||0)+(pat.wordHighSubs||0)+(pat.wordMediumPhon||0);
+    document.getElementById("sActivePatterns").textContent = total;
+    document.getElementById("hTotalEntries").textContent   = s.total + " entries";
+    document.getElementById("hPatterns").textContent       = total + " patterns";
+  } catch(_) {}
+}
+
+// ══ Table ══════════════════════════════════════════════════════════════════════
+async function loadEntries() {
+  const params = new URLSearchParams({
+    search: searchQ, risk: riskF, source: srcF,
+    page, limit: pageLimit,
+  });
+  try {
+    const d = await api(`/admin/api/entries?${params}`);
+    totalRows = d.total;
+    renderTable(d.items);
+    renderPager();
+  } catch(e) { toast(e.message, true); }
+}
+
+function renderTable(items) {
+  const tbody = document.getElementById("tableBody");
+  if (!items.length) {
+    tbody.innerHTML = `<tr><td colspan="8" class="empty">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg><br>No entries found</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = items.map(e => {
+    const ttsFm = (e.phonetic_version||"").replace(/-/g,"") || e.phonetic_tts || "–";
+    return `<tr>
+      <td class="word-cell">${esc(e.word||e.normalized_word)}</td>
+      <td class="phonetic-cell">${esc(e.phonetic_version||"–")}</td>
+      <td style="color:var(--muted);font-family:monospace;font-size:12px">${esc(ttsFm)}</td>
+      <td class="repl-cell">${esc(e.replace_with_if_needed||"–")}</td>
+      <td><span class="cat-badge">${esc(e.category||"–")}</span></td>
+      <td><span class="risk-badge risk-${e.tts_risk_score||"medium"}">${(e.tts_risk_score||"medium").toUpperCase()}</span></td>
+      <td><span class="src-${e.source==="admin"?"admin":"master"}">${e.source==="admin"?"✎ admin":"master"}</span></td>
+      <td><div class="actions">
+        <button class="btn-sm" onclick='openEdit(${JSON.stringify(JSON.stringify(e))})'>Edit</button>
+        ${e.source==="admin"
+          ? `<button class="btn-sm danger" onclick="delEntry('${esc(e.normalized_word||e.word)}')">Del</button>`
+          : `<button class="btn-sm" style="opacity:.5" title="Clone to admin" onclick='cloneEntry(${JSON.stringify(JSON.stringify(e))})'>Clone</button>`}
+      </div></td>
+    </tr>`;
+  }).join("");
+}
+
+function renderPager() {
+  const pages = Math.ceil(totalRows / pageLimit);
+  const pager = document.getElementById("pager");
+  if (pages <= 1) { pager.innerHTML = `<span>${totalRows} entries</span>`; return; }
+  let html = `<button onclick="goPage(${page-1})" ${page<=1?"disabled":""}>‹ Prev</button>`;
+  // Show limited page buttons
+  const range = 5, start = Math.max(1,page-2), end = Math.min(pages,start+range-1);
+  for (let i=start; i<=end; i++)
+    html += `<button class="${i===page?"active":""}" onclick="goPage(${i})">${i}</button>`;
+  html += `<button onclick="goPage(${page+1})" ${page>=pages?"disabled":""}>Next ›</button>`;
+  html += `<span>${totalRows} entries, page ${page}/${pages}</span>`;
+  pager.innerHTML = html;
+}
+
+function goPage(p) { page = p; loadEntries(); }
+
+function onSearch() {
+  searchQ = document.getElementById("searchInput").value.trim();
+  riskF   = document.getElementById("riskFilter").value;
+  srcF    = document.getElementById("srcFilter").value;
+  page = 1;
+  loadEntries();
+}
+
+// Sort
+let sortCol = "", sortDir = 1;
+function sortBy(col) {
+  if (sortCol === col) sortDir *= -1; else { sortCol = col; sortDir = 1; }
+  document.querySelectorAll(".sort-icon").forEach(el => el.textContent="↕");
+  const icon = document.getElementById("si-"+col);
+  if (icon) icon.textContent = sortDir > 0 ? "↑" : "↓";
+  // Re-fetch with sort (server-side not implemented — client sort on current page)
+  const tbody = document.getElementById("tableBody");
+  const rows  = Array.from(tbody.querySelectorAll("tr")).filter(r=>r.cells.length>1);
+  const colMap = {word:0,phonetic_version:1,replace_with_if_needed:3,category:4,tts_risk_score:5};
+  const ci = colMap[col] ?? 0;
+  rows.sort((a,b) => (a.cells[ci].textContent < b.cells[ci].textContent ? -1 : 1) * sortDir);
+  rows.forEach(r => tbody.appendChild(r));
+}
+
+// ══ CRUD ═══════════════════════════════════════════════════════════════════════
+function openAdd() {
+  document.getElementById("modalTitle").textContent = "Add Entry";
+  document.getElementById("fKey").value   = "";
+  document.getElementById("fWord").value  = "";
+  document.getElementById("fPhonetic").value     = "";
+  document.getElementById("fReplacement").value  = "";
+  document.getElementById("fLang").value    = "Hindi";
+  document.getElementById("fRisk").value    = "medium";
+  document.getElementById("fCategory").value     = "";
+  document.getElementById("previewBox").style.display = "none";
+  document.getElementById("entryModal").style.display = "flex";
+  document.getElementById("fWord").focus();
+}
+
+function openEdit(jsonStr) {
+  const e = JSON.parse(jsonStr);
+  document.getElementById("modalTitle").textContent = "Edit Entry";
+  document.getElementById("fKey").value          = e.normalized_word || e.word;
+  document.getElementById("fWord").value         = e.word || e.normalized_word;
+  document.getElementById("fPhonetic").value     = e.phonetic_version || "";
+  document.getElementById("fReplacement").value  = e.replace_with_if_needed || "";
+  document.getElementById("fLang").value         = e.language_type || "Hindi";
+  document.getElementById("fRisk").value         = e.tts_risk_score || "medium";
+  document.getElementById("fCategory").value     = e.category || "";
+  updatePreview();
+  document.getElementById("entryModal").style.display = "flex";
+}
+
+function cloneEntry(jsonStr) {
+  const e = JSON.parse(jsonStr);
+  openEdit(jsonStr);
+  document.getElementById("fKey").value = ""; // treat as new admin entry
+  document.getElementById("modalTitle").textContent = "Clone to Admin";
+}
+
+function closeModal() { document.getElementById("entryModal").style.display = "none"; }
+
+async function saveEntry() {
+  const word  = document.getElementById("fWord").value.trim();
+  if (!word) { toast("Word is required", true); return; }
+  const entry = {
+    word,
+    normalized_word:       word.toLowerCase().trim(),
+    phonetic_version:      document.getElementById("fPhonetic").value.trim(),
+    replace_with_if_needed: document.getElementById("fReplacement").value.trim(),
+    language_type:         document.getElementById("fLang").value,
+    tts_risk_score:        document.getElementById("fRisk").value,
+    category:              document.getElementById("fCategory").value.trim() || "general",
+  };
+  try {
+    await api("/admin/api/entries","POST", entry);
+    toast("✓ Entry saved & hot-reloaded");
+    closeModal();
+    loadEntries();
+    loadStats();
+  } catch(e) { toast(e.message, true); }
+}
+
+async function delEntry(word) {
+  if (!confirm(`Delete "${word}" from admin entries?`)) return;
+  try {
+    await api(`/admin/api/entries/${encodeURIComponent(word)}`, "DELETE");
+    toast("✓ Deleted & hot-reloaded");
+    loadEntries();
+    loadStats();
+  } catch(e) { toast(e.message, true); }
+}
+
+// Live preview in modal
+function updatePreview() {
+  const phonetic   = document.getElementById("fPhonetic").value.trim();
+  const replacement= document.getElementById("fReplacement").value.trim();
+  const risk       = document.getElementById("fRisk").value;
+  const lang       = document.getElementById("fLang").value;
+  const box        = document.getElementById("previewBox");
+  const ttsEl      = document.getElementById("previewTts");
+  const ruleEl     = document.getElementById("previewRule");
+
+  if (!phonetic && !replacement) { box.style.display="none"; return; }
+
+  let ttsForm = "", rule = "";
+  if (risk === "high" && replacement) {
+    ttsForm = replacement;
+    rule    = "High risk → English replacement applied";
+  } else if (risk === "medium" && lang === "Hindi" && phonetic) {
+    ttsForm = phonetic.replace(/-/g,"");
+    rule    = "Medium Hindi → phonetic hint (hyphens stripped)";
+  } else if (risk === "low") {
+    ttsForm = "(skipped — TTS handles natively)";
+    rule    = "Low risk → no transformation";
+  } else {
+    ttsForm = phonetic.replace(/-/g,"") || replacement || "—";
+    rule    = "Hinglish → English replacement only if high risk";
+  }
+
+  ttsEl.textContent  = ttsForm;
+  ruleEl.textContent = rule;
+  box.style.display  = "block";
+}
+
+["fPhonetic","fReplacement","fRisk","fLang"].forEach(id =>
+  document.getElementById(id).addEventListener("input", updatePreview)
+);
+
+// ══ TTS Test ═══════════════════════════════════════════════════════════════════
+function showTestPanel() {
+  document.getElementById("testPanel").style.display = "block";
+  document.getElementById("testInput").focus();
+}
+function hideTestPanel() { document.getElementById("testPanel").style.display = "none"; }
+
+async function runTest() {
+  const text    = document.getElementById("testInput").value.trim();
+  const voiceId = document.getElementById("voiceSelect").value;
+  if (!text) return;
+
+  document.getElementById("testResult").innerHTML = "<span class='unchanged'>Processing…</span>";
+  try {
+    const r = await api("/admin/api/test","POST",{ text, voiceId });
+    if (!r.changed) {
+      document.getElementById("testResult").innerHTML = `<span class="unchanged">✓ No changes — TTS receives original text</span>`;
+      return;
+    }
+    // Highlight changed words
+    const orig = r.original.split(/(\s+)/);
+    const proc = r.processed.split(/(\s+)/);
+    let html = "";
+    for (let i=0; i<Math.max(orig.length,proc.length); i++) {
+      const o = orig[i]||"", p = proc[i]||"";
+      if (/^\s+$/.test(o)) { html += " "; continue; }
+      html += o===p
+        ? `<span class="unchanged">${esc(p)}</span>`
+        : `<span class="changed" title="was: ${esc(o)}">${esc(p)}</span>`;
+    }
+    const changeList = r.changes.slice(0,6).map(c=>`"${c.from}" → "${c.to}"`).join("  •  ");
+    document.getElementById("testResult").innerHTML =
+      html + (changeList ? `<span class="change-tag">Changed: ${esc(changeList)}</span>` : "");
+  } catch(e) {
+    document.getElementById("testResult").innerHTML = `<span style="color:var(--red)">${esc(e.message)}</span>`;
+  }
+}
+
+document.getElementById("testInput").addEventListener("keydown", e => {
+  if (e.key==="Enter" && e.ctrlKey) runTest();
+});
+
+// ══ Import / Export ════════════════════════════════════════════════════════════
+function openImport() { document.getElementById("importModal").style.display="flex"; }
+function closeImport() { document.getElementById("importModal").style.display="none"; }
+
+async function doImport() {
+  const raw = document.getElementById("importJson").value.trim();
+  document.getElementById("importErr").textContent = "";
+  let parsed;
+  try { parsed = JSON.parse(raw); } catch(e) {
+    document.getElementById("importErr").textContent = "Invalid JSON: " + e.message; return;
+  }
+  try {
+    const r = await api("/admin/api/import","POST", parsed);
+    toast(`✓ Imported ${r.imported} entries & hot-reloaded`);
+    closeImport();
+    loadEntries();
+    loadStats();
+  } catch(e) { document.getElementById("importErr").textContent = e.message; }
+}
+
+async function doExport() {
+  const a = document.createElement("a");
+  a.href = "/admin/api/export";
+  a.setAttribute("Authorization","");  // header auth won't work for download link
+  // Workaround: fetch and create blob
+  try {
+    const resp = await fetch("/admin/api/export", { headers:{ Authorization:`Bearer ${TOKEN}` } });
+    if (!resp.ok) throw new Error("Export failed");
+    const blob = await resp.blob();
+    a.href = URL.createObjectURL(blob);
+    a.download = `admin_pronunciation_${Date.now()}.json`;
+    a.click();
+    toast("✓ Exported");
+  } catch(e) { toast(e.message, true); }
+}
+
+// ══ Helpers ════════════════════════════════════════════════════════════════════
+function esc(s) {
+  return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+function toast(msg, isErr=false) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.className   = "show" + (isErr ? " error" : "");
+  clearTimeout(t._tid);
+  t._tid = setTimeout(() => t.className="", 3200);
+}
+</script>
+</body>
+</html>

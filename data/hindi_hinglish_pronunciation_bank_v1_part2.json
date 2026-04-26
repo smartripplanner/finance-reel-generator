@@ -1,0 +1,361 @@
+{
+  "meta": {
+    "version": "v1_part2",
+    "purpose": "tts_pronunciation_cleanup_for_instagram_finance_reels",
+    "language_focus": ["Hindi", "Hinglish"],
+    "notes": "Continuation pack. Merge with Part 1 pronunciation_bank array."
+  },
+  "pronunciation_bank": [
+    {
+      "word": "50 percent log",
+      "normalized_word": "50 percent log",
+      "phonetic_version": "fifty percent loag",
+      "language_type": "Hinglish",
+      "category": "hook",
+      "replace_with_if_needed": "half the people",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "zyada log",
+      "normalized_word": "zyada log",
+      "phonetic_version": "zyaa-daa loag",
+      "language_type": "Hinglish",
+      "category": "people",
+      "replace_with_if_needed": "most people",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "kam log",
+      "normalized_word": "kam log",
+      "phonetic_version": "kum loag",
+      "language_type": "Hinglish",
+      "category": "people",
+      "replace_with_if_needed": "few people",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "aaj se",
+      "normalized_word": "aaj se",
+      "phonetic_version": "aaj say",
+      "language_type": "Hindi",
+      "category": "time",
+      "replace_with_if_needed": "from today",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "abhi se",
+      "normalized_word": "abhi se",
+      "phonetic_version": "ub-hee say",
+      "language_type": "Hindi",
+      "category": "time",
+      "replace_with_if_needed": "right now",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "abhi",
+      "normalized_word": "abhi",
+      "phonetic_version": "ub-hee",
+      "language_type": "Hindi",
+      "category": "time",
+      "replace_with_if_needed": "now",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "aaj",
+      "normalized_word": "aaj",
+      "phonetic_version": "aaj",
+      "language_type": "Hindi",
+      "category": "time",
+      "replace_with_if_needed": "today",
+      "tts_risk_score": "low"
+    },
+    {
+      "word": "kal se",
+      "normalized_word": "kal se",
+      "phonetic_version": "kul say",
+      "language_type": "Hindi",
+      "category": "time",
+      "replace_with_if_needed": "from tomorrow",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "ab tak",
+      "normalized_word": "ab tak",
+      "phonetic_version": "ub tuk",
+      "language_type": "Hindi",
+      "category": "time",
+      "replace_with_if_needed": "till now",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "itna",
+      "normalized_word": "itna",
+      "phonetic_version": "it-naa",
+      "language_type": "Hindi",
+      "category": "quantity",
+      "replace_with_if_needed": "this much",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "utna",
+      "normalized_word": "utna",
+      "phonetic_version": "ut-naa",
+      "language_type": "Hindi",
+      "category": "quantity",
+      "replace_with_if_needed": "that much",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "thoda",
+      "normalized_word": "thoda",
+      "phonetic_version": "tho-daa",
+      "language_type": "Hindi",
+      "category": "quantity",
+      "replace_with_if_needed": "little",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "zyada",
+      "normalized_word": "zyada",
+      "phonetic_version": "zyaa-daa",
+      "language_type": "Hindi",
+      "category": "quantity",
+      "replace_with_if_needed": "more",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "kam",
+      "normalized_word": "kam",
+      "phonetic_version": "kum",
+      "language_type": "Hindi",
+      "category": "quantity",
+      "replace_with_if_needed": "less",
+      "tts_risk_score": "low"
+    },
+    {
+      "word": "bahut",
+      "normalized_word": "bahut",
+      "phonetic_version": "buh-hut",
+      "language_type": "Hindi",
+      "category": "quantity",
+      "replace_with_if_needed": "very",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "achha",
+      "normalized_word": "achha",
+      "phonetic_version": "uch-haa",
+      "language_type": "Hindi",
+      "category": "quality",
+      "replace_with_if_needed": "good",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "bura",
+      "normalized_word": "bura",
+      "phonetic_version": "boo-raa",
+      "language_type": "Hindi",
+      "category": "quality",
+      "replace_with_if_needed": "bad",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "asaan",
+      "normalized_word": "asaan",
+      "phonetic_version": "aa-saan",
+      "language_type": "Hindi",
+      "category": "quality",
+      "replace_with_if_needed": "easy",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "mushkil",
+      "normalized_word": "mushkil",
+      "phonetic_version": "mush-kil",
+      "language_type": "Hindi",
+      "category": "quality",
+      "replace_with_if_needed": "hard",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "zaroori",
+      "normalized_word": "zaroori",
+      "phonetic_version": "za-roo-ree",
+      "language_type": "Hindi",
+      "category": "importance",
+      "replace_with_if_needed": "important",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "dhyan do",
+      "normalized_word": "dhyan do",
+      "phonetic_version": "dhyaan do",
+      "language_type": "Hindi",
+      "category": "hook",
+      "replace_with_if_needed": "pay attention",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "samjho",
+      "normalized_word": "samjho",
+      "phonetic_version": "sum-jho",
+      "language_type": "Hindi",
+      "category": "action",
+      "replace_with_if_needed": "understand",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "socho",
+      "normalized_word": "socho",
+      "phonetic_version": "so-cho",
+      "language_type": "Hindi",
+      "category": "action",
+      "replace_with_if_needed": "think",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "dekho",
+      "normalized_word": "dekho",
+      "phonetic_version": "day-kho",
+      "language_type": "Hindi",
+      "category": "hook",
+      "replace_with_if_needed": "look",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "sun lo",
+      "normalized_word": "sun lo",
+      "phonetic_version": "sun lo",
+      "language_type": "Hindi",
+      "category": "hook",
+      "replace_with_if_needed": "listen now",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "ruk jao",
+      "normalized_word": "ruk jao",
+      "phonetic_version": "ruk jaao",
+      "language_type": "Hindi",
+      "category": "hook",
+      "replace_with_if_needed": "stop now",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "samay",
+      "normalized_word": "samay",
+      "phonetic_version": "suh-may",
+      "language_type": "Hindi",
+      "category": "time",
+      "replace_with_if_needed": "time",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "mehnat",
+      "normalized_word": "mehnat",
+      "phonetic_version": "meh-nut",
+      "language_type": "Hindi",
+      "category": "effort",
+      "replace_with_if_needed": "hard work",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "kismat",
+      "normalized_word": "kismat",
+      "phonetic_version": "kis-mut",
+      "language_type": "Hindi",
+      "category": "belief",
+      "replace_with_if_needed": "luck",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "aadat",
+      "normalized_word": "aadat",
+      "phonetic_version": "aa-dut",
+      "language_type": "Hindi",
+      "category": "habit",
+      "replace_with_if_needed": "habit",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "income badhao",
+      "normalized_word": "income badhao",
+      "phonetic_version": "in-kum bu-dhaa-o",
+      "language_type": "Hinglish",
+      "category": "income",
+      "replace_with_if_needed": "increase income",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "kharcha kam karo",
+      "normalized_word": "kharcha kam karo",
+      "phonetic_version": "khar-chaa kum ka-ro",
+      "language_type": "Hinglish",
+      "category": "expense",
+      "replace_with_if_needed": "reduce expenses",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "paisa bachao",
+      "normalized_word": "paisa bachao",
+      "phonetic_version": "pai-saa bu-chaa-o",
+      "language_type": "Hinglish",
+      "category": "saving",
+      "replace_with_if_needed": "save money",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "loan mat lo",
+      "normalized_word": "loan mat lo",
+      "phonetic_version": "loan mut lo",
+      "language_type": "Hinglish",
+      "category": "debt",
+      "replace_with_if_needed": "avoid loan",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "EMI ka trap",
+      "normalized_word": "emi ka trap",
+      "phonetic_version": "ee-em-eye kaa trap",
+      "language_type": "Hinglish",
+      "category": "debt",
+      "replace_with_if_needed": "EMI trap",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "future secure karo",
+      "normalized_word": "future secure karo",
+      "phonetic_version": "fyoo-chur si-kyoor ka-ro",
+      "language_type": "Hinglish",
+      "category": "planning",
+      "replace_with_if_needed": "secure your future",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "smart bano",
+      "normalized_word": "smart bano",
+      "phonetic_version": "smart bu-no",
+      "language_type": "Hinglish",
+      "category": "motivation",
+      "replace_with_if_needed": "be smart",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "aaj hi start karo",
+      "normalized_word": "aaj hi start karo",
+      "phonetic_version": "aaj hee start ka-ro",
+      "language_type": "Hinglish",
+      "category": "cta",
+      "replace_with_if_needed": "start today",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "abhi follow karo",
+      "normalized_word": "abhi follow karo",
+      "phonetic_version": "ub-hee fa-lo ka-ro",
+      "language_type": "Hinglish",
+      "category": "cta",
+      "replace_with_if_needed": "follow now",
+      "tts_risk_score": "medium"
+    }
+  ]
+}

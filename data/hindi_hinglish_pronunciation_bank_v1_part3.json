@@ -1,0 +1,352 @@
+{
+  "meta": {
+    "version": "v1_part3",
+    "purpose": "tts_pronunciation_cleanup_for_instagram_finance_reels",
+    "language_focus": ["Hindi", "Hinglish"],
+    "notes": "Continuation pack. Merge with previous pronunciation_bank arrays."
+  },
+  "pronunciation_bank": [
+    {
+      "word": "samajh lo",
+      "normalized_word": "samajh lo",
+      "phonetic_version": "suh-mujh lo",
+      "language_type": "Hindi",
+      "category": "hook",
+      "replace_with_if_needed": "understand this",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "yaad rakho",
+      "normalized_word": "yaad rakho",
+      "phonetic_version": "yaa-d rakh-o",
+      "language_type": "Hindi",
+      "category": "hook",
+      "replace_with_if_needed": "remember this",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "mat karo",
+      "normalized_word": "mat karo",
+      "phonetic_version": "mut ka-ro",
+      "language_type": "Hindi",
+      "category": "warning",
+      "replace_with_if_needed": "don't do this",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "ye galti",
+      "normalized_word": "ye galti",
+      "phonetic_version": "yeh gul-tee",
+      "language_type": "Hindi",
+      "category": "mistake",
+      "replace_with_if_needed": "this mistake",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "sabse badi galti",
+      "normalized_word": "sabse badi galti",
+      "phonetic_version": "sub-say bu-dee gul-tee",
+      "language_type": "Hindi",
+      "category": "hook",
+      "replace_with_if_needed": "biggest mistake",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "ye sach hai",
+      "normalized_word": "ye sach hai",
+      "phonetic_version": "yeh suchh hai",
+      "language_type": "Hindi",
+      "category": "truth",
+      "replace_with_if_needed": "this is true",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "asli reason",
+      "normalized_word": "asli reason",
+      "phonetic_version": "us-lee ree-zun",
+      "language_type": "Hinglish",
+      "category": "hook",
+      "replace_with_if_needed": "real reason",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "asli problem",
+      "normalized_word": "asli problem",
+      "phonetic_version": "us-lee prob-lum",
+      "language_type": "Hinglish",
+      "category": "hook",
+      "replace_with_if_needed": "real problem",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "yeh trap hai",
+      "normalized_word": "yeh trap hai",
+      "phonetic_version": "yeh trap hai",
+      "language_type": "Hinglish",
+      "category": "fear",
+      "replace_with_if_needed": "this is a trap",
+      "tts_risk_score": "low"
+    },
+    {
+      "word": "bada risk",
+      "normalized_word": "bada risk",
+      "phonetic_version": "bu-daa risk",
+      "language_type": "Hinglish",
+      "category": "risk",
+      "replace_with_if_needed": "big risk",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "safe option",
+      "normalized_word": "safe option",
+      "phonetic_version": "sayf op-shun",
+      "language_type": "Hinglish",
+      "category": "safety",
+      "replace_with_if_needed": "safe choice",
+      "tts_risk_score": "low"
+    },
+    {
+      "word": "pakka rule",
+      "normalized_word": "pakka rule",
+      "phonetic_version": "puk-kaa rool",
+      "language_type": "Hinglish",
+      "category": "authority",
+      "replace_with_if_needed": "solid rule",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "sahi tarika",
+      "normalized_word": "sahi tarika",
+      "phonetic_version": "suh-hee tu-ree-kaa",
+      "language_type": "Hindi",
+      "category": "education",
+      "replace_with_if_needed": "right method",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "galat tarika",
+      "normalized_word": "galat tarika",
+      "phonetic_version": "guh-lut tu-ree-kaa",
+      "language_type": "Hindi",
+      "category": "education",
+      "replace_with_if_needed": "wrong method",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "seedha formula",
+      "normalized_word": "seedha formula",
+      "phonetic_version": "see-dhaa for-myoo-la",
+      "language_type": "Hinglish",
+      "category": "education",
+      "replace_with_if_needed": "simple formula",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "simple tarika",
+      "normalized_word": "simple tarika",
+      "phonetic_version": "sim-pul tu-ree-kaa",
+      "language_type": "Hinglish",
+      "category": "education",
+      "replace_with_if_needed": "easy method",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "ghar kharcha",
+      "normalized_word": "ghar kharcha",
+      "phonetic_version": "ghar khar-chaa",
+      "language_type": "Hindi",
+      "category": "expense",
+      "replace_with_if_needed": "home expenses",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "mahine ka kharcha",
+      "normalized_word": "mahine ka kharcha",
+      "phonetic_version": "ma-hee-nay kaa khar-chaa",
+      "language_type": "Hindi",
+      "category": "expense",
+      "replace_with_if_needed": "monthly expense",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "salary khatam",
+      "normalized_word": "salary khatam",
+      "phonetic_version": "sal-uh-ree kha-tum",
+      "language_type": "Hinglish",
+      "category": "salary",
+      "replace_with_if_needed": "salary finished",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "month end problem",
+      "normalized_word": "month end problem",
+      "phonetic_version": "munth end prob-lum",
+      "language_type": "Hinglish",
+      "category": "salary",
+      "replace_with_if_needed": "month end issue",
+      "tts_risk_score": "low"
+    },
+    {
+      "word": "paisa rukta nahi",
+      "normalized_word": "paisa rukta nahi",
+      "phonetic_version": "pai-saa ruk-taa nuh-hee",
+      "language_type": "Hindi",
+      "category": "money",
+      "replace_with_if_needed": "money doesn't stay",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "paisa double",
+      "normalized_word": "paisa double",
+      "phonetic_version": "pai-saa dub-ul",
+      "language_type": "Hinglish",
+      "category": "growth",
+      "replace_with_if_needed": "money double",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "wealth build karo",
+      "normalized_word": "wealth build karo",
+      "phonetic_version": "welth build ka-ro",
+      "language_type": "Hinglish",
+      "category": "wealth",
+      "replace_with_if_needed": "build wealth",
+      "tts_risk_score": "low"
+    },
+    {
+      "word": "future plan karo",
+      "normalized_word": "future plan karo",
+      "phonetic_version": "fyoo-chur plan ka-ro",
+      "language_type": "Hinglish",
+      "category": "planning",
+      "replace_with_if_needed": "plan future",
+      "tts_risk_score": "low"
+    },
+    {
+      "word": "retirement ka plan",
+      "normalized_word": "retirement ka plan",
+      "phonetic_version": "ree-tyur-munt kaa plan",
+      "language_type": "Hinglish",
+      "category": "retirement",
+      "replace_with_if_needed": "retirement plan",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "emergency ke liye",
+      "normalized_word": "emergency ke liye",
+      "phonetic_version": "ee-mer-jun-see kay lee-yay",
+      "language_type": "Hinglish",
+      "category": "saving",
+      "replace_with_if_needed": "for emergency",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "side income banao",
+      "normalized_word": "side income banao",
+      "phonetic_version": "side in-kum bu-naao",
+      "language_type": "Hinglish",
+      "category": "income",
+      "replace_with_if_needed": "build side income",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "extra paisa",
+      "normalized_word": "extra paisa",
+      "phonetic_version": "eks-tra pai-saa",
+      "language_type": "Hinglish",
+      "category": "income",
+      "replace_with_if_needed": "extra money",
+      "tts_risk_score": "low"
+    },
+    {
+      "word": "time waste mat karo",
+      "normalized_word": "time waste mat karo",
+      "phonetic_version": "time wayst mut ka-ro",
+      "language_type": "Hinglish",
+      "category": "motivation",
+      "replace_with_if_needed": "don't waste time",
+      "tts_risk_score": "low"
+    },
+    {
+      "word": "aaj se invest karo",
+      "normalized_word": "aaj se invest karo",
+      "phonetic_version": "aaj say in-vest ka-ro",
+      "language_type": "Hinglish",
+      "category": "investment",
+      "replace_with_if_needed": "start investing today",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "save karke rakho",
+      "normalized_word": "save karke rakho",
+      "phonetic_version": "sayv kur-kay rakh-o",
+      "language_type": "Hinglish",
+      "category": "saving",
+      "replace_with_if_needed": "keep it saved",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "yeh yaad rakho",
+      "normalized_word": "yeh yaad rakho",
+      "phonetic_version": "yeh yaa-d rakh-o",
+      "language_type": "Hindi",
+      "category": "hook",
+      "replace_with_if_needed": "remember this",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "samay nikal raha hai",
+      "normalized_word": "samay nikal raha hai",
+      "phonetic_version": "suh-may ni-kul ru-haa hai",
+      "language_type": "Hindi",
+      "category": "urgency",
+      "replace_with_if_needed": "time is running out",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "late mat karo",
+      "normalized_word": "late mat karo",
+      "phonetic_version": "layt mut ka-ro",
+      "language_type": "Hinglish",
+      "category": "urgency",
+      "replace_with_if_needed": "don't delay",
+      "tts_risk_score": "low"
+    },
+    {
+      "word": "abhi action lo",
+      "normalized_word": "abhi action lo",
+      "phonetic_version": "ub-hee ak-shun lo",
+      "language_type": "Hinglish",
+      "category": "cta",
+      "replace_with_if_needed": "take action now",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "seekh lo",
+      "normalized_word": "seekh lo",
+      "phonetic_version": "seekh lo",
+      "language_type": "Hindi",
+      "category": "education",
+      "replace_with_if_needed": "learn this",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "samajhdar log",
+      "normalized_word": "samajhdar log",
+      "phonetic_version": "suh-mujh-daar loag",
+      "language_type": "Hindi",
+      "category": "people",
+      "replace_with_if_needed": "smart people",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "bewakoof log",
+      "normalized_word": "bewakoof log",
+      "phonetic_version": "bay-wa-koof loag",
+      "language_type": "Hindi",
+      "category": "people",
+      "replace_with_if_needed": "foolish people",
+      "tts_risk_score": "high"
+    }
+  ]
+}

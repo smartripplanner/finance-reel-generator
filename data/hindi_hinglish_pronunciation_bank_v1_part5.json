@@ -1,0 +1,311 @@
+{
+  "meta": {
+    "version": "v1_part5",
+    "purpose": "tts_pronunciation_cleanup_for_instagram_finance_reels",
+    "language_focus": ["Hindi", "Hinglish"],
+    "notes": "Continuation pack. Merge with previous pronunciation_bank arrays."
+  },
+  "pronunciation_bank": [
+    {
+      "word": "ghar baithe",
+      "normalized_word": "ghar baithe",
+      "phonetic_version": "ghar bai-thay",
+      "language_type": "Hindi",
+      "category": "lifestyle",
+      "replace_with_if_needed": "from home",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "ghar se kaam",
+      "normalized_word": "ghar se kaam",
+      "phonetic_version": "ghar say kaam",
+      "language_type": "Hindi",
+      "category": "work",
+      "replace_with_if_needed": "work from home",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "side hustle karo",
+      "normalized_word": "side hustle karo",
+      "phonetic_version": "side hus-ul ka-ro",
+      "language_type": "Hinglish",
+      "category": "income",
+      "replace_with_if_needed": "start side hustle",
+      "tts_risk_score": "low"
+    },
+    {
+      "word": "online kamao",
+      "normalized_word": "online kamao",
+      "phonetic_version": "on-line ku-maa-o",
+      "language_type": "Hinglish",
+      "category": "income",
+      "replace_with_if_needed": "earn online",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "extra income",
+      "normalized_word": "extra income",
+      "phonetic_version": "eks-tra in-kum",
+      "language_type": "Hinglish",
+      "category": "income",
+      "replace_with_if_needed": "side income",
+      "tts_risk_score": "low"
+    },
+    {
+      "word": "kamai badhao",
+      "normalized_word": "kamai badhao",
+      "phonetic_version": "ku-maa-ee bu-dhaa-o",
+      "language_type": "Hindi",
+      "category": "income",
+      "replace_with_if_needed": "increase earnings",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "income source",
+      "normalized_word": "income source",
+      "phonetic_version": "in-kum sores",
+      "language_type": "Hinglish",
+      "category": "income",
+      "replace_with_if_needed": "income stream",
+      "tts_risk_score": "low"
+    },
+    {
+      "word": "multiple income",
+      "normalized_word": "multiple income",
+      "phonetic_version": "mul-ti-pul in-kum",
+      "language_type": "Hinglish",
+      "category": "income",
+      "replace_with_if_needed": "multiple incomes",
+      "tts_risk_score": "low"
+    },
+    {
+      "word": "sirf salary",
+      "normalized_word": "sirf salary",
+      "phonetic_version": "sirf sal-uh-ree",
+      "language_type": "Hinglish",
+      "category": "salary",
+      "replace_with_if_needed": "only salary",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "salary pe depend",
+      "normalized_word": "salary pe depend",
+      "phonetic_version": "sal-uh-ree pay di-pend",
+      "language_type": "Hinglish",
+      "category": "salary",
+      "replace_with_if_needed": "depend on salary",
+      "tts_risk_score": "medium"
+    },
+
+    {
+      "word": "paisa invest karo",
+      "normalized_word": "paisa invest karo",
+      "phonetic_version": "pai-saa in-vest ka-ro",
+      "language_type": "Hinglish",
+      "category": "investment",
+      "replace_with_if_needed": "invest money",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "thoda invest karo",
+      "normalized_word": "thoda invest karo",
+      "phonetic_version": "tho-daa in-vest ka-ro",
+      "language_type": "Hinglish",
+      "category": "investment",
+      "replace_with_if_needed": "invest a little",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "roz invest karo",
+      "normalized_word": "roz invest karo",
+      "phonetic_version": "roaz in-vest ka-ro",
+      "language_type": "Hinglish",
+      "category": "investment",
+      "replace_with_if_needed": "invest regularly",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "sip shuru karo",
+      "normalized_word": "sip shuru karo",
+      "phonetic_version": "ess-eye-pee shu-roo ka-ro",
+      "language_type": "Hinglish",
+      "category": "investment",
+      "replace_with_if_needed": "start SIP",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "chhota amount",
+      "normalized_word": "chhota amount",
+      "phonetic_version": "cho-taa uh-mount",
+      "language_type": "Hinglish",
+      "category": "investment",
+      "replace_with_if_needed": "small amount",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "bada amount",
+      "normalized_word": "bada amount",
+      "phonetic_version": "bu-daa uh-mount",
+      "language_type": "Hinglish",
+      "category": "investment",
+      "replace_with_if_needed": "big amount",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "return milega",
+      "normalized_word": "return milega",
+      "phonetic_version": "ree-turn mi-lay-gaa",
+      "language_type": "Hinglish",
+      "category": "returns",
+      "replace_with_if_needed": "you'll get returns",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "profit milega",
+      "normalized_word": "profit milega",
+      "phonetic_version": "pro-fit mi-lay-gaa",
+      "language_type": "Hinglish",
+      "category": "profit",
+      "replace_with_if_needed": "profit comes",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "loss hoga",
+      "normalized_word": "loss hoga",
+      "phonetic_version": "loss ho-gaa",
+      "language_type": "Hinglish",
+      "category": "loss",
+      "replace_with_if_needed": "there will be loss",
+      "tts_risk_score": "low"
+    },
+    {
+      "word": "risk kam hai",
+      "normalized_word": "risk kam hai",
+      "phonetic_version": "risk kum hai",
+      "language_type": "Hinglish",
+      "category": "risk",
+      "replace_with_if_needed": "risk is low",
+      "tts_risk_score": "low"
+    },
+
+    {
+      "word": "karz mat lo",
+      "normalized_word": "karz mat lo",
+      "phonetic_version": "kurz mut lo",
+      "language_type": "Hindi",
+      "category": "debt",
+      "replace_with_if_needed": "avoid debt",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "udhari mat lo",
+      "normalized_word": "udhari mat lo",
+      "phonetic_version": "u-dhaa-ree mut lo",
+      "language_type": "Hindi",
+      "category": "debt",
+      "replace_with_if_needed": "avoid borrowing",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "loan trap",
+      "normalized_word": "loan trap",
+      "phonetic_version": "loan trap",
+      "language_type": "Hinglish",
+      "category": "debt",
+      "replace_with_if_needed": "loan trap",
+      "tts_risk_score": "low"
+    },
+    {
+      "word": "credit card trap",
+      "normalized_word": "credit card trap",
+      "phonetic_version": "cre-dit kaard trap",
+      "language_type": "Hinglish",
+      "category": "debt",
+      "replace_with_if_needed": "card trap",
+      "tts_risk_score": "low"
+    },
+    {
+      "word": "interest bharoge",
+      "normalized_word": "interest bharoge",
+      "phonetic_version": "in-trust bha-ro-gay",
+      "language_type": "Hinglish",
+      "category": "debt",
+      "replace_with_if_needed": "you'll pay interest",
+      "tts_risk_score": "medium"
+    },
+
+    {
+      "word": "mehengai badh rahi hai",
+      "normalized_word": "mehengai badh rahi hai",
+      "phonetic_version": "meh-hen-gaai budh ru-hee hai",
+      "language_type": "Hindi",
+      "category": "inflation",
+      "replace_with_if_needed": "inflation is rising",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "price badh gaya",
+      "normalized_word": "price badh gaya",
+      "phonetic_version": "price budh guh-yaa",
+      "language_type": "Hinglish",
+      "category": "inflation",
+      "replace_with_if_needed": "price increased",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "sab mehenga",
+      "normalized_word": "sab mehenga",
+      "phonetic_version": "sub meh-hen-gaa",
+      "language_type": "Hindi",
+      "category": "inflation",
+      "replace_with_if_needed": "everything expensive",
+      "tts_risk_score": "high"
+    },
+    {
+      "word": "paisa ki value",
+      "normalized_word": "paisa ki value",
+      "phonetic_version": "pai-saa kee val-yoo",
+      "language_type": "Hinglish",
+      "category": "inflation",
+      "replace_with_if_needed": "money value",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "value gir rahi hai",
+      "normalized_word": "value gir rahi hai",
+      "phonetic_version": "val-yoo gir ru-hee hai",
+      "language_type": "Hinglish",
+      "category": "inflation",
+      "replace_with_if_needed": "value is falling",
+      "tts_risk_score": "medium"
+    },
+
+    {
+      "word": "abhi join karo",
+      "normalized_word": "abhi join karo",
+      "phonetic_version": "ub-hee join ka-ro",
+      "language_type": "Hinglish",
+      "category": "cta",
+      "replace_with_if_needed": "join now",
+      "tts_risk_score": "low"
+    },
+    {
+      "word": "comment mein batao",
+      "normalized_word": "comment mein batao",
+      "phonetic_version": "kom-ent mayn bu-taa-o",
+      "language_type": "Hinglish",
+      "category": "cta",
+      "replace_with_if_needed": "tell in comments",
+      "tts_risk_score": "medium"
+    },
+    {
+      "word": "save karke bhejo",
+      "normalized_word": "save karke bhejo",
+      "phonetic_version": "sayv kur-kay bhay-jo",
+      "language_type": "Hinglish",
+      "category": "cta",
+      "replace_with_if_needed": "save and send",
+      "tts_risk_score": "high"
+    }
+  ]
+}

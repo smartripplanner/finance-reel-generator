@@ -6,155 +6,52 @@ const path   = require("path");
 const ffmpeg = require("fluent-ffmpeg");
 const ffmpegBin = require("ffmpeg-static");
 
+const pronunciationEngine = require("./pronunciationEngine");
+
 const BASE_URL      = "https://api.elevenlabs.io/v1";
 const FALLBACK_VOICE = "21m00Tcm4TlvDq8ikWAM";  // Rachel (clear, warm, works well for Hindi)
 const DEFAULT_SPEED  = 1.20;   // brisker pace — matches 20-25 s audio window
 const MIN_TARGET_SECS = 20;    // aligned with renderer MIN_DURATION (20 s)
 const MAX_TARGET_SECS = 25;    // leaves 5 s headroom under the 30 s video cap
 const CTA_LINE = "Aise aur tips chahiye? Toh abhi follow karo.";
-const INTRO_SILENCE_MS = 600;  // matches INTRO_SECONDS in renderer.js
+const INTRO_SILENCE_MS = 450;  // matches INTRO_SECONDS in renderer.js (0.5 s)
 const OUTRO_SILENCE_S  = 1;    // short tail — video cap is 30 s, don't waste it
 
 ffmpeg.setFfmpegPath(ffmpegBin);
 
-// ── Text preprocessing ────────────────────────────────────────────────────────
-// ElevenLabs multilingual_v2 handles Hinglish well, but needs help with:
-//  • currency symbols  • abbreviations  • numbers  • words that split wrong
-function preprocessText(text) {
-  return String(text || "")
-    // ─── Currency ───
-    .replace(/₹\s*(\d[\d,.]*)\s*(lakh|crore|k|L|Cr)?/gi, (_, amt, sfx) =>
-      `${amt}${sfx ? " " + sfx.trim() : ""} rupaye`
-    )
-    .replace(/₹/g, "rupaye")
-
-    // ─── Common finance abbreviations → phonetic Hindi ───
-    .replace(/\bSIP\b/g,   "es aa ee pee")
-    .replace(/\bFD\b/g,    "ef dee")
-    .replace(/\bEMI\b/g,   "ee em aa ee")
-    .replace(/\bGST\b/g,   "jee es tee")
-    .replace(/\bPPF\b/g,   "pee pee ef")
-    .replace(/\bNPS\b/g,   "en pee es")
-    .replace(/\bELSS\b/g,  "ee el es es")
-    .replace(/\bRD\b/g,    "aar dee")
-    .replace(/\bROI\b/g,   "aar o aa ee")
-    .replace(/\bXIRR\b/g,  "ex aa ee aar aar")
-    .replace(/\bNFO\b/g,   "en ef o")
-
-    // ─── Common English terms → natural Hindi pronunciation hint ───
-    .replace(/\bmutual fund\b/gi,       "myuchual fund")
-    .replace(/\bcompound interest\b/gi, "compound interest")
-    .replace(/\bstock market\b/gi,      "stock market")
-    .replace(/\bterm insurance\b/gi,    "term insurance")
-
-    // ─── Percentages → spoken form ───
-    .replace(/\b90\s*%/g, "nabbe percent")
-    .replace(/\b80\s*%/g, "assi percent")
-    .replace(/\b70\s*%/g, "sattar percent")
-    .replace(/\b50\s*%/g, "pachaas percent")
-    .replace(/\b(\d+)\s*%/g, (_, n) => `${n} percent`)
-
-    // ─── Hinglish words that TTS often mispronounces ───
-    // Add a soft "h" hint so the model uses the correct Hindustani vowel
-    .replace(/\bkyun\b/gi,    "kyoon")
-    .replace(/\bkyu\b/gi,     "kyoon")
-    .replace(/\bnahi\b/gi,    "nahin")
-    .replace(/\bnah\b/gi,     "nahin")
-    .replace(/\bhoga\b/gi,    "hoga")
-    .replace(/\bkarna\b/gi,   "karna")
-    .replace(/\bkarega\b/gi,  "karega")
-    .replace(/\bkarte\b/gi,   "karte")
-    .replace(/\blagta\b/gi,   "lagta")
-    .replace(/\blagti\b/gi,   "lagti")
-    .replace(/\bsamajh\b/gi,  "samajh")
-    .replace(/\bsaath\b/gi,   "saath")
-    .replace(/\bpaisa\b/gi,   "paisa")
-    .replace(/\bpaise\b/gi,   "paise")
-    .replace(/\baane\b/gi,    "aane")
-    .replace(/\bbaad\b/gi,    "baad")
-    .replace(/\bsoch\b/gi,    "soch")
-    .replace(/\bjaanta\b/gi,  "jaanta")
-    .replace(/\bjaanti\b/gi,  "jaanti")
-    .replace(/\bmahina\b/gi,  "mahina")
-    .replace(/\bmahine\b/gi,  "mahine")
-    .replace(/\bdikhta\b/gi,  "dikhta")
-    .replace(/\bdikhti\b/gi,  "dikhti")
-    .replace(/\blekin\b/gi,   "lekin")
-    .replace(/\bwarna\b/gi,   "warna")
-    .replace(/\bphir\b/gi,    "phir")
-    .replace(/\bkabhi\b/gi,   "kabhi")
-    .replace(/\bsirf\b/gi,    "sirf")
-    .replace(/\bbhul\b/gi,    "bhool")
-    .replace(/\bbhool\b/gi,   "bhool")
-    .replace(/\bzehan\b/gi,   "zehan")
-    .replace(/\bwaqt\b/gi,    "waqt")
-    .replace(/\bkharcha\b/gi, "kharcha")
-    .replace(/\bkharche\b/gi, "kharche")
-
-    // ─── CTA / call-to-action corrections — MUST come before generic verb fixes ───
-    // "follow karlungi / kar lungi / kar lunga / kar lo" → imperative "follow karo"
-    .replace(/\bfollow\s+karlungi\b/gi,     "follow karo")
-    .replace(/\bfollow\s+kar\s+lungi\b/gi,  "follow karo")
-    .replace(/\bfollow\s+kar\s+lunga\b/gi,  "follow karo")
-    .replace(/\bfollow\s+kar\s+lo\b/gi,     "follow karo")
-    .replace(/\bfollow\s+karna\b/gi,        "follow karo")
-    .replace(/\bfollow\s+kar\s+lena\b/gi,   "follow karo")
-
-    // ─── Feminine voice corrections (safety net — prompt already asks for feminine) ───
-    // Masculine future-tense (unga/unga endings) → feminine (ungi)
-    .replace(/\bkarunga\b/gi,    "karungi")
-    .replace(/\bkahunga\b/gi,    "kahungi")
-    .replace(/\bbolunga\b/gi,    "bolungi")
-    .replace(/\bdunga\b/gi,      "dungi")
-    .replace(/\blunga\b/gi,      "lungi")
-    .replace(/\baaunga\b/gi,     "aaungi")
-    .replace(/\bjaunga\b/gi,     "jaungi")
-    .replace(/\bjaaunga\b/gi,    "jaungi")
-    .replace(/\bsochunga\b/gi,   "sochungi")
-    .replace(/\blikhunga\b/gi,   "likhungi")
-    .replace(/\bpadhunga\b/gi,   "padhungi")
-    .replace(/\bsiikhunga\b/gi,  "siikhungi")
-    .replace(/\bsikhlunga\b/gi,  "sikhlungi")
-    .replace(/\bkhelunga\b/gi,   "khelungi")
-    .replace(/\bpuchunga\b/gi,   "puchungi")
-    .replace(/\bdehunga\b/gi,    "dehungi")
-    .replace(/\bkhounga\b/gi,    "khoungi")
-    .replace(/\bsamjhunga\b/gi,  "samjhungi")
-    .replace(/\bbachunga\b/gi,   "bachungi")
-    .replace(/\bbanaunga\b/gi,   "banaungi")
-    .replace(/\bkharaabunga\b/gi,"kharaabungi")
-    // Masculine raha → rahi (narrator self-reference)
-    .replace(/\bmain\s+(\w+)\s+raha\s+hoon\b/gi, "main $1 rahi hoon")
-    .replace(/\bmain\s+(\w+)\s+raha\s+hu\b/gi,   "main $1 rahi hu")
-
-    // ─── Clean up whitespace ───
-    .replace(/\s+/g, " ")
-    .trim();
+// ── Text preprocessing — delegates to pronunciationEngine ─────────────────────
+// The engine applies 5 layers: normalization → context disambiguation →
+// smart substitution → number/abbrev expansion → phonetic rewrite → QA scan.
+//
+// To fix a pronunciation: edit services/pronunciationEngine.js
+// To add a runtime correction: edit pronunciation-overrides.json (no restart needed)
+function preprocessText(text, voiceId) {
+  return pronunciationEngine.process(String(text || ""), voiceId);
 }
 
 // ── Narration humaniser ───────────────────────────────────────────────────────
+//
+// NOTE: Do NOT append a CTA here. The CTA scene is always the last item in the
+// scene array and is included in the narration by buildNarration(). Adding a
+// second CTA here would produce a duplicate at the end of every reel.
+//
 function humanizeNarration(text) {
   const cleaned = String(text || "")
     .replace(/\s+/g, " ")
     .replace(/\s*([,.;:!?])\s*/g, "$1 ")
     .trim();
 
-  if (!cleaned) return CTA_LINE;
+  if (!cleaned) return "";
 
   // Normalise common informal spellings for consistent TTS behaviour
-  const softened = cleaned
+  return cleaned
     .replace(/\bmatlab\b/gi,        "matlab")
     .replace(/\bkyun\b/gi,          "kyoon")
     .replace(/\bkyu\b/gi,           "kyoon")
     .replace(/\bkarna chahiye\b/gi, "karna chahiye")
     // Ensure any surviving CTA variants are normalised to the imperative form
-    .replace(/\bfollow\s+kar\s+l[oa]\b/gi,  "follow karo")
+    .replace(/\bfollow\s+kar\s+l[oa]\b/gi,     "follow karo")
     .replace(/\bfollow\s+kar\s+l[uo]ngi?\b/gi, "follow karo");
-
-  // Append CTA only if none of the known "follow" variants already appear
-  return /follow\s+kar/i.test(softened)
-    ? softened
-    : `${softened}. ${CTA_LINE}`;
 }
 
 // ── Speed tuning ──────────────────────────────────────────────────────────────
@@ -241,7 +138,7 @@ async function generateAudio(text, outputPath) {
   if (!apiKey) throw new Error("ELEVENLABS_API_KEY is missing from .env");
 
   const voiceId   = process.env.ELEVENLABS_VOICE_ID || FALLBACK_VOICE;
-  const narration = humanizeNarration(preprocessText(text));
+  const narration = humanizeNarration(preprocessText(text, voiceId));
   const speed     = tuneSpeed(narration);
 
   const dir       = path.dirname(outputPath);
@@ -275,4 +172,53 @@ async function generateAudio(text, outputPath) {
   }
 }
 
-module.exports = { generateAudio };
+// ── Narration builder — scene-aware pause injection ───────────────────────────
+//
+// Scenes with scenePurpose "hook", "reveal", or "payoff" get a longer pause
+// after them so the TTS has a beat of silence to let the line land.
+// "pain" and "action" get a normal sentence break.
+// "cta" gets no trailing pause (voice energy should drive straight through).
+//
+// ElevenLabs multilingual_v2 respects "..." as a meaningful pause and
+// sentence-boundary punctuation ". " for a shorter beat.
+//
+function buildNarration(scenes) {
+  if (!Array.isArray(scenes) || !scenes.length) return "";
+
+  return scenes.map((scene, i) => {
+    const purpose = (scene.scenePurpose || "action").toLowerCase();
+    const text    = String(scene.text || "").trim().replace(/\s*[.!?]+\s*$/, ""); // strip trailing punct
+
+    // Choose separator based on purpose
+    let sep;
+    switch (purpose) {
+      case "hook":
+        // Dramatic pause — let the hook land
+        sep = i < scenes.length - 1 ? "... " : ".";
+        break;
+      case "reveal":
+        // Longer beat — truth bomb needs a moment to sink in
+        sep = i < scenes.length - 1 ? "... " : ".";
+        break;
+      case "payoff":
+        // Short pause — empowering close, building to CTA
+        sep = i < scenes.length - 1 ? ".. " : ".";
+        break;
+      case "cta":
+        // No trailing pause — CTA ends the audio
+        sep = ".";
+        break;
+      case "pain":
+        // Normal sentence break — relatable, flowing
+        sep = i < scenes.length - 1 ? ". " : ".";
+        break;
+      default:
+        // "action" and everything else: standard break
+        sep = i < scenes.length - 1 ? ". " : ".";
+    }
+
+    return text + sep;
+  }).join("");
+}
+
+module.exports = { generateAudio, buildNarration };
