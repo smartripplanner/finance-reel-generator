@@ -19,13 +19,29 @@ const OUTRO_SILENCE_S  = 1;    // short tail — video cap is 30 s, don't waste 
 
 ffmpeg.setFfmpegPath(ffmpegBin);
 
+// ── Devanagari detection ──────────────────────────────────────────────────────
+// If the narration already contains Devanagari script, the pronunciation is
+// handled natively by the multilingual_v2 model — skip the pronunciation
+// engine entirely to avoid it corrupting properly-encoded Hindi text.
+function hasDevanagari(text) {
+  return /[\u0900-\u097F]/.test(text);
+}
+
 // ── Text preprocessing — delegates to pronunciationEngine ─────────────────────
-// The engine applies 5 layers: normalization → context disambiguation →
-// smart substitution → number/abbrev expansion → phonetic rewrite → QA scan.
-//
-// To fix a pronunciation: edit services/pronunciationEngine.js
-// To add a runtime correction: edit pronunciation-overrides.json (no restart needed)
+// Only called when the narration is pure Roman Hinglish (no Devanagari).
+// When Devanagari is present, the devanagariConverter has already handled
+// pronunciation — running the engine on top would corrupt the Devanagari.
 function preprocessText(text, voiceId) {
+  if (hasDevanagari(text)) {
+    // Devanagari path: only do minimal numeric/symbol cleanup, skip phonetic engine
+    return String(text || "")
+      .replace(/₹/g, "rupees ")
+      .replace(/Rs\.?\s*/gi, "rupees ")
+      .replace(/%/g, " percent")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+  // Roman Hinglish path: full pronunciation engine (legacy / fallback)
   return pronunciationEngine.process(String(text || ""), voiceId);
 }
 

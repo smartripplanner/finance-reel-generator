@@ -9,8 +9,9 @@ const { v4: uuidv4 } = require("uuid");
 const { generateScript, generateCaption } = require("../services/gemini");
 const { generateAudio, buildNarration  } = require("../services/elevenlabs");
 // renderFrames now handles both rendering AND encoding via JPEG→stdin pipe
-const { renderFrames       } = require("../services/renderer");
-const { lightQualityCheck  } = require("../services/scriptQualityEngine");
+const { renderFrames         } = require("../services/renderer");
+const { lightQualityCheck    } = require("../services/scriptQualityEngine");
+const { convertNarration     } = require("../services/devanagariConverter");
 
 const ROOT       = path.join(__dirname, "..");
 const TEMP_BASE  = path.join(ROOT, "temp");
@@ -216,10 +217,19 @@ async function runJob(jobId) {
     patch(jobId, { progress: 12, step: "Creating voiceover…" });
     log(jobId, "audio + caption start");
 
-    // Build narration with scene-purpose-aware pauses (hook/reveal get longer beats)
-    const narration = buildNarration(scenes);
+    // Build two versions of the narration:
+    //   ttsNarration  — Devanagari-converted (Hindi words in native script) → TTS
+    //   scenes        — unchanged Roman Hinglish → renderer (slide text on screen)
+    //
+    // WHY: ElevenLabs multilingual_v2 reads Devanagari with perfect Hindi
+    // pronunciation — no phonetic hacks needed. Slides stay in Roman Hindi
+    // because viewers read it faster on screen.
+    const rawNarration = buildNarration(scenes);
+    const ttsNarration = convertNarration(rawNarration);
+    log(jobId, `narration: ${rawNarration.split(/\s+/).length} words → Devanagari converted`);
+
     const [, captionData] = await Promise.all([
-      generateAudio(narration, audioPath),
+      generateAudio(ttsNarration, audioPath),
       generateCaption(job.topic, scenes).catch(() => ({
         caption:  `${job.topic} ke baare mein yeh jaanna zaroori hai! 💰\nFollow karo tips ke liye! 🚀`,
         hashtags: ["#finance","#money","#SIP","#investing","#personalfinance",

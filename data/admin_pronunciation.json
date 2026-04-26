@@ -11,5 +11,44 @@
     "source": "admin",
     "created_at": "2026-04-26T07:32:22.045Z",
     "updated_at": "2026-04-26T07:32:22.045Z"
+  },
+  {
+    "word": "Sach",
+    "normalized_word": "sach",
+    "phonetic_version": "such",
+    "phonetic_tts": "such",
+    "language_type": "Hindi",
+    "category": "hook",
+    "replace_with_if_needed": "True",
+    "tts_risk_score": "medium",
+    "source": "admin",
+    "created_at": "2026-04-26T12:38:56.996Z",
+    "updated_at": "2026-04-26T12:38:56.996Z"
+  },
+  {
+    "word": "galat",
+    "normalized_word": "galat",
+    "phonetic_version": "galat",
+    "phonetic_tts": "galat",
+    "language_type": "Hindi",
+    "category": "quality",
+    "replace_with_if_needed": "wrong",
+    "tts_risk_score": "medium",
+    "source": "admin",
+    "created_at": "2026-04-26T12:39:24.512Z",
+    "updated_at": "2026-04-26T12:39:24.512Z"
+  },
+  {
+    "word": "galat tarika",
+    "normalized_word": "galat tarika",
+    "phonetic_version": "ga-lat tu-ree-kaa",
+    "phonetic_tts": "galat tureekaa",
+    "language_type": "Hindi",
+    "category": "education",
+    "replace_with_if_needed": "wrong method",
+    "tts_risk_score": "high",
+    "source": "admin",
+    "created_at": "2026-04-26T12:39:45.564Z",
+    "updated_at": "2026-04-26T12:39:45.564Z"
   }
 ]

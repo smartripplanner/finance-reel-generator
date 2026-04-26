@@ -295,5 +295,59 @@
       "createdAt": "2026-04-26T12:19:21.253Z",
       "updatedAt": "2026-04-26T12:21:43.252Z"
     }
+  ],
+  [
+    "a7a13074-0b8d-4f9f-8d41-28762e4772ae",
+    {
+      "id": "a7a13074-0b8d-4f9f-8d41-28762e4772ae",
+      "topic": "Why most Indians stay broke despite salary",
+      "status": "completed",
+      "progress": 100,
+      "step": "Done!",
+      "videoUrl": "/output/reel_1777210361764.mp4",
+      "caption": "Salary aati hai, phir bhi end-of-month broke feel karte ho? 💰 Pata hai kyu? Is reel mein bataunga most Indians salary ke bawajood bhi broke kyu rehte hain! 📈 Follow for more money hacks!",
+      "hashtags": [
+        "#PersonalFinanceIndia",
+        "#IndianFinance",
+        "#MoneyManagementIndia",
+        "#FinancialFreedomIndia",
+        "#SalaryProblems",
+        "#BrokeNoMore",
+        "#InvestEarly",
+        "#EquityInvestingIndia",
+        "#FinancialPlanningIndia",
+        "#IndianYouthFinance"
+      ],
+      "error": null,
+      "createdAt": "2026-04-26T13:32:41.223Z",
+      "updatedAt": "2026-04-26T13:37:17.953Z"
+    }
+  ],
+  [
+    "6c7a2a37-3285-4021-9d1f-2abe4f1822af",
+    {
+      "id": "6c7a2a37-3285-4021-9d1f-2abe4f1822af",
+      "topic": "Why most Indians stay broke despite salary",
+      "status": "completed",
+      "progress": 100,
+      "step": "Done!",
+      "videoUrl": "/output/reel_1777215766777.mp4",
+      "caption": "Why most Indians stay broke despite salary ke baare mein yeh cheez jaanna zaroori hai! 💰\n\nAise aur smart money tips ke liye follow karo! 🚀",
+      "hashtags": [
+        "#finance",
+        "#money",
+        "#investing",
+        "#personalfinance",
+        "#wealth",
+        "#IndianFinance",
+        "#moneymanagement",
+        "#financetips",
+        "#paisa",
+        "#richhabits"
+      ],
+      "error": null,
+      "createdAt": "2026-04-26T15:02:46.760Z",
+      "updatedAt": "2026-04-26T15:04:32.346Z"
+    }
   ]
 ]
