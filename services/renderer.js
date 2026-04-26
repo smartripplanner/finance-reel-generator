@@ -131,6 +131,7 @@ async function renderFrames(
     "-pix_fmt","yuv420p",
     "-movflags","+faststart",
     "-threads","1",
+    "-max_muxing_queue_size","1024",  // prevents EPIPE from mux-queue overflow on slow pipes
     "-shortest",
     "-acodec","aac","-b:a","128k",
     videoPath,
@@ -148,6 +149,14 @@ async function renderFrames(
     ffproc.on("error", reject);
   });
 
+  // ── Guard stdin against EPIPE crashing the process ───────────────────────
+  // If FFmpeg exits early (OOM, -shortest audio trim, any crash) it closes its
+  // stdin pipe.  Without this handler the next write() emits an unhandled
+  // 'error' event and Node kills the entire server — taking down every job.
+  // We capture the error here; the frame loop checks it before each write.
+  let stdinError = null;
+  ffproc.stdin.on("error", (err) => { stdinError = err; });
+
   // ── Single shared canvas ──────────────────────────────────────────────────
   const canvas = createCanvas(W,H);
   const ctx    = canvas.getContext("2d");
@@ -156,6 +165,11 @@ async function renderFrames(
 
   try {
     for (let frame=0; frame<totalFrames; frame++) {
+
+      // FFmpeg closed its end of the pipe — stop sending frames.
+      // ffmpegDone will resolve/reject with the actual exit status below.
+      if (stdinError) break;
+
       const currentTime = frame/FPS;
       const overall     = clamp(
         (currentTime-INTRO_SECONDS)/Math.max(0.1,totalAudioSecs-INTRO_SECONDS),
@@ -186,8 +200,20 @@ async function renderFrames(
       // ── JPEG → FFmpeg stdin ───────────────────────────────────────────────
       const jpegBuf  = canvas.toBuffer("image/jpeg", { quality: JPEG_QUALITY });
       const canWrite = ffproc.stdin.write(jpegBuf);
-      if (!canWrite) {
-        await new Promise(resolve => ffproc.stdin.once("drain", resolve));
+      if (!canWrite && !stdinError) {
+        // Back-pressure: wait for drain, but bail if FFmpeg dies during the wait
+        // (drain will never fire on a dead pipe — the timeout prevents hanging).
+        await new Promise(resolve => {
+          const onDrain = () => { clearTimeout(t); resolve(); };
+          const onErr   = () => { clearTimeout(t); resolve(); };  // stdinError already set
+          const t = setTimeout(() => {
+            ffproc.stdin.removeListener("drain", onDrain);
+            ffproc.stdin.removeListener("error", onErr);
+            resolve();
+          }, 8_000);
+          ffproc.stdin.once("drain", onDrain);
+          ffproc.stdin.once("error", onErr);
+        });
       }
 
       // Yield to event loop — keeps Express status-poll requests responsive
@@ -213,7 +239,9 @@ async function renderFrames(
       ffproc.stdin.destroy();
       try { ffproc.kill(); } catch (_) {}
     } else {
-      ffproc.stdin.end();
+      // stdin.end() is safe even if FFmpeg already closed — errors are swallowed
+      // by the stdinError handler above.
+      try { ffproc.stdin.end(); } catch (_) {}
     }
   }
 
